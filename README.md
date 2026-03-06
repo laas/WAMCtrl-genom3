@@ -743,4 +743,4 @@ scripts and adding more components.  For instance:
   heading when the platform reaches its physical limits.
 
 For the full API reference, see the auto-generated documentation in
-[README.adoc](README.adoc).
+[README_API.adoc](README_API.adoc).
