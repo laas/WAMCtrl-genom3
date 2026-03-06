@@ -1,0 +1,30 @@
+Makefile.in
+aclocal.m4
+autoconf/*
+!/autoconf/*.m4
+/autoconf/libtool.m4
+/autoconf/lt*.m4
+autom4te.cache/
+configure
+*~
+
+.venv/
+# Build folders
+build/
+cmake-build-*/
+
+# CMake files
+CMakeCache.txt
+CMakeFiles/
+cmake_install.cmake
+Makefile
+
+# Compiled binaries
+*.o
+*.so
+*.a
+*.out
+*.exe
+
+# Logs
+*.log

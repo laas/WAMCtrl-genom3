@@ -1,0 +1,500 @@
+/*/
+ * Copyright (c) 2015-2024 LAAS/CNRS
+ * All rights reserved.
+ *
+ * Redistribution and use  in source  and binary  forms,  with or without
+ * modification, are permitted provided that the following conditions are
+ * met:
+ *
+ *   1. Redistributions of  source  code must retain the  above copyright
+ *      notice and this list of conditions.
+ *   2. Redistributions in binary form must reproduce the above copyright
+ *      notice and  this list of  conditions in the  documentation and/or
+ *      other materials provided with the distribution.
+ *
+ *					Johanata Brayan on Tue Mar 05 2026
+ */
+#pragma require "openrobots2-idl >= 2.0"
+
+#include "or/pose/pose_estimator.gen"
+#include "or/pose/rigid_body.gen"
+#include "or/pose/wrench_estimator.gen"
+#include "or/sensor/joint.gen"
+#include "or/robot/rotorcraft.gen"
+
+component wamctrl {
+  version		"2.4";
+  email			"openrobots@laas.fr";
+  lang			"c";
+  require		"genom3 >= 2.99.41";
+  codels-require	"eigen3";
+  codels-require	"proxsuite >= 0.6.4";
+  codels-require	"pinocchio";
+  codels-require	"urdfdom";
+
+  uses		or_rotorcraft, or_pose_estimator, or_joint;
+  provides	or_wrench_estimator;
+
+  port in	or_pose_estimator::state state;
+  port in	or_rigid_body::state reference;
+  
+  /* read joint/motor state from an external component */
+  port in	or_joint::state joints {
+    doc "Current joint (motor) measurements.";
+    doc "Structure is defined by <or/sensor/joint.gen>; see the `joints`";
+    doc "port documentation for field meanings (names, flags, positions,";
+    doc "velocities, efforts).";
+  };
+
+  port out or_wrench_estimator::state wrench_measure {
+    doc "Provides current wrench measurements.";
+    doc "";
+    doc "This port contains the current wrench exerted by the UAV according";
+    doc "to the propeller measurements and the geometric model.";
+  };
+
+  exception e_input, e_geom;
+  exception e_sys { short code; string<128> what; };
+  exception e_inval { string<128> what; };
+  exception e_urdf { string<256> what; };  /* URDF loading errors */
+
+  native log_s;
+
+  enum attitude_control_mode {
+    full_attitude,
+    tilt_prioritized
+  };
+
+  native pinocchio_s;
+
+  ids {
+    struct body_s {
+      double G[6 * or_rotorcraft::max_rotors]; /* velocities^2 to wrench */
+      double iG[or_rotorcraft::max_rotors * 6]; /* wrench to velocities^2 */
+
+      double J[3 * 3]; /* inertia matrix */
+      double mass;
+
+      unsigned short rotors;
+      double wmin, wmax;
+      double wrench_min[6], wrench_max[6];
+
+      boolean init; /* true when data was set */
+    } body;
+
+    struct servo_s {
+      struct sat_s { double x, v, ix; } sat;
+      struct satweight_s {
+        boolean enable;
+        double thrust, tilt, head;
+      } satweight;
+
+      struct gain_s {
+        double Kpxy, Kpz, Kqxy, Kqz, Kvxy, Kvz, Kwxy, Kwz;
+        double Kixy, Kiz;
+      } gain;
+
+      attitude_control_mode att_mode;
+
+      double ramp;
+      double scale;
+
+      struct emerg_s {
+        double descent;
+        double dx, dq, dv, dw;
+      } emerg;
+    } servo;
+
+    or_rigid_body::state reference;
+
+    string urdf_path;
+
+    pinocchio_s pinocchio;
+
+    struct wholebody_s {
+      unsigned short nj;              /* number of joints (0-8) */
+      double Kp_base[6];              /* base gains: [x,y,z,wx,wy,wz] */
+      double Kd_base[6];              /* base damping */
+      double Kp_joint[8];             /* joint gains */
+      double Kd_joint[8];             /* joint damping */
+      double qd_base[7];              /* desired base: [x,y,z,qx,qy,qz,qw] */
+      double qd_joint[8];             /* desired joint positions */
+      boolean init;                   /* true when URDF loaded and configured */
+    } wholebody;
+
+    /* logging */
+    log_s log;
+  };
+
+  attribute set_saturation(in servo.sat);
+
+  attribute set_saturation_weights(in servo.satweight = {
+      .enable = TRUE : "Enable wrench saturation",
+      .thrust = 10. : "Relative weight for thrust saturation",
+      .tilt = 100. : "Relative weight for roll and pitch saturation",
+      .head = 1. : "Relative weight for heading saturation"
+    }) {
+    doc "Select relative priority for thrust, titlting and heading.";
+    doc "";
+    doc "When the controller reaches the physical wrench limits of the";
+    doc "platform (see <<set_wlimit>>), an optimisation algorithm finds";
+    doc "the closest feasible wrench that keeps the same thurst direction";
+    doc "as well as the same roll and pitch torque direction.";
+    doc "";
+    doc "The weights specified here allow to give higher priority to certain";
+    doc "components of the wrench and let them be less affected by the";
+    doc "optimization algorithm. Higher weight means that the corresponding";
+    doc "component is less likely to change in intensity.";
+
+    validate wamctrl_set_satweights(in satweight);
+    codel wamctrl_reset_controller(in body, in servo);
+
+    throw e_inval;
+  };
+
+  attribute set_servo_gain(in servo.gain);
+  attribute set_control_mode(
+    in servo.att_mode = tilt_prioritized: "Attitude tracking control law") {
+    doc "Select attitude tracking control law.";
+    doc "";
+    doc "With `tilt_prioritized`, attitude error is split into a";
+    doc "reduced attitude error, which describes the misalignment of";
+    doc "the thrust direction, and a yaw error, which describes the";
+    doc "heading orientation error. This is the default.";
+    doc "";
+    doc "With `full_attitude`, a conventional controller, based on the full";
+    doc "attitude error, is used.";
+  };
+  attribute set_wlimit(
+    in body.wmin =: "Minimum propeller velocity",
+    in body.wmax =: "Maximum propeller velocity") {
+    codel wamctrl_set_wlimit(inout body);
+    codel wamctrl_reset_controller(in body, in servo);
+  };
+  attribute set_mass(in body.mass) {
+    validate wamctrl_change_mass(in mass, inout body);
+  };
+  attribute set_geom(
+    in body.mass =: "Mass (kg)",
+    in body.G =: "Mapping from propellers velocity^2 to wrench",
+    in body.J =: "Inertia matrix") {
+    doc "Set mass, allocation matrix and inertia tensor.";
+    doc "";
+    doc "This is a generic function for setting the geometric parameters of";
+    doc "the controlled robot. See <<set_gtmrp_geom>> for a specialized";
+    doc "function for tilted multi rotors robots.";
+
+    codel wamctrl_set_geom(inout body);
+    codel wamctrl_reset_controller(in body, in servo);
+  };
+  function set_gtmrp_geom(
+    in unsigned short rotors = 4 : "Number of rotors",
+    in double cx = 0. : "X position of center of rotors wrt center of mass (m)",
+    in double cy = 0. : "Y position of center of rotors wrt center of mass (m)",
+    in double cz = 0. : "Z position of center of rotors wrt center of mass (m)",
+    in double armlen = 0.23 : "Distance of rotors to the center (m)",
+    in double mass = 1.28 : "Total mass (kg)",
+    in double mbodyw = 0.11 : "Main mass body width (m)",
+    in double mbodyh = 0.17 : "Main mass body height (m)",
+    in double mmotor = 0.07 : "Motor mass (kg)",
+    in double rx = 0 : "X rotation of the first rotor thrust vector (deg)",
+    in double ry = 0 : "Y rotation of the first rotor thrust vector (deg)",
+    in short rz = -1 : "Z spin direction of the first rotor (1: ccw, -1: cw)",
+    in double cf = 6.5e-4 : "Propeller thrust coefficient (N.s²)",
+    in double ct = 1e-5 : "Propeller torque coefficient (N.m.s²)") {
+    doc "Compute allocation matrix and inertia tensor for tilt rotors robots.";
+    doc "";
+    doc "Generically Tilted Multi-Rotor Platforms (GTMRP) are made of a set";
+    doc "of rotors evenly distributed in a horizontal plane. The rotors are";
+    doc "tilted around an axis lying in the plane, all by the same angle but";
+    doc "with alternating signs on the X axis. The spinning direction is also";
+    doc "alternating.";
+    doc "";
+    doc "This function is a specialization of the more generic <<set_geom>>.";
+
+    codel wamctrl_set_gtmrp_geom(in rotors, in cx, in cy, in cz, in armlen,
+                              in mass, in mbodyw, in mbodyh, in mmotor,
+                              in rx, in ry, in rz, in cf, in ct,
+                              out body);
+    codel wamctrl_reset_controller(in body, in servo);
+
+    throw e_inval;
+  };
+
+  attribute set_emerg(in servo.emerg = {
+    .descent = 0.1 : "Vertical acceleration for emergency descent (m/s²)",
+    .dx = 0.05 : "Position uncertainty threshold (m, 3σ)",
+    .dq = 5 : "Attitude uncertainty threshold (deg, 3σ)",
+    .dv = 0.2 : "Linear velocity uncertainty threshold (m/s, 3σ)",
+    .dw = 20 : "Angular velocity uncertainty threshold (deg/s, 3σ)" }) {
+    doc "Set thresholds for emergency descent.";
+    doc "";
+    doc "Units: All thresholds are expressed as 3σ (3 times standard deviation).";
+    doc "- dx: position uncertainty in meters";
+    doc "- dq: attitude uncertainty in degrees (converted internally to rad²)";
+    doc "- dv: linear velocity uncertainty in m/s";
+    doc "- dw: angular velocity uncertainty in deg/s (converted internally)";
+    doc "";
+    doc "`dx`, `dq`, `dv` and `dw` represent the maximum uncertainty tolerated";
+    doc "in the input <<state>> for position (`dx`), orientation (`dq`),";
+    doc "linear velocity (`dv`) and angular velocity (`dw`), measured as 3";
+    doc "times the standard deviation.";
+    doc "By default, `dx` is 5cm, `dq` is 5°, `dv` is 20cm/s and `dw` 20°/s.";
+    doc "Beyond that threshold, an emergency descent is started.";
+    doc "";
+    doc "As long as the emergency descent is active, the position error or";
+    doc "linear velocity error are cancelled (i.e. the desired roll and pitch";
+    doc "are set to 0) and a vertical acceleration of `descent` (by default";
+    doc "-0.1 m/s²) is requested. The descent is based on the mass only,";
+    doc "with no feedback, as the state is considered invalid. If the";
+    doc "orientation is invalid in the <<state>>, then no control on the";
+    doc "attitude is possible and the stability is not guaranteed ...";
+
+    validate wamctrl_set_emerg(local inout emerg);
+  };
+
+  attribute get_servo_parameters(out servo);
+  attribute get_body_parameters(out body);
+  attribute get_wholebody_parameters(out wholebody);
+
+  function get_reference(out or_rigid_body::state reference) {
+    codel wamctrl_get_reference(ids in reference::internal, local out reference);
+  };
+
+  const unsigned short control_period_ms = 1;
+
+  task main {
+    period control_period_ms ms;
+
+    codel<start> wamctrl_main_start(out ::ids, out rotor_input,
+                                           out joint_input)
+      yield init;
+    codel<init> wamctrl_main_init(ids inout reference, in body, in state,
+                               in joints,
+                               in rotor_measure,
+                               out rotor_input, out joint_input,
+                               out wrench_measure)
+      yield pause::init, pause::control;
+
+    codel<control> wamctrl_main_control(in body, inout servo,
+                                     in state, in wrench_measure,
+                                     in joints, in wholebody, inout pinocchio,
+                                     ids inout reference,
+                                     inout log, out rotor_input,
+                                     out joint_input)
+      yield measure, emergency;
+    codel<measure> wamctrl_main_measure(in body,
+                                     in state, in rotor_measure,
+                                     out wrench_measure)
+      yield pause::control;
+
+    codel<emergency> wamctrl_main_emergency(in body, inout servo,
+                                         in state, ids inout reference,
+                                         inout log, out rotor_input,
+                                         out joint_input)
+      yield pause::emergency, control;
+
+    codel<stop> wamctrl_main_stop(out rotor_input, out joint_input)
+      yield ether;
+  };
+
+
+  /* --- control ----------------------------------------------------------- */
+
+  activity servo() {
+    doc		"Track a desired position";
+    task	main;
+
+    validate wamctrl_check_geom(in body.init);
+
+    codel<start> wamctrl_servo_main(port in reference::in, ids out reference)
+      yield pause::start, ether;
+
+    interrupt servo;
+    throw e_input, e_geom;
+  };
+
+  function set_state(
+    in or::t3d::pos pos =: "Position",
+    in or::t3d::att att =: "Orientation",
+    in or::t3d::vel vel =: "Linear velocity",
+    in or::t3d::avel avel =: "Angular velocity",
+    in or::t3d::acc acc =: "Acceleration") {
+    doc		"Set the desired state";
+
+    validate wamctrl_check_geom(in body.init);
+
+    codel wamctrl_set_state(in pos, in att, in vel, in avel, in acc,
+                         ids out reference);
+
+    interrupt servo;
+    throw e_geom;
+  };
+
+  function set_position(
+    in double x, in double y, in double z, in double yaw) {
+    doc "Set the desired position";
+    doc "";
+    doc "The controller will hover on the given position and heading, with a";
+    doc "zero velocity.";
+
+    validate wamctrl_check_geom(in body.init);
+
+    codel wamctrl_set_position(in x, in y, in z, in yaw, ids out reference);
+
+    interrupt servo;
+    throw e_geom;
+  };
+
+  activity set_current_position() {
+    doc "Set the desired position to the current state.";
+    doc "";
+    doc "The controller will hover on the position and heading currently given";
+    doc "by the state contained in the port <<state>>, with a zero velocity.";
+    doc "Note that <<state>> is only read once and the robot will not track";
+    doc "changes in the state. See <<servo>> for an actual trajectory";
+    doc "tracking.";
+
+    task	main;
+
+    validate wamctrl_check_geom(in body.init);
+
+    codel<start> wamctrl_set_current_position(in state, ids out reference)
+      yield ether;
+
+    interrupt servo;
+    throw e_input, e_geom;
+  };
+
+  function set_velocity(
+    in double x, in double y, in double z, in double yaw) {
+    doc "Set the desired velocity";
+    doc "";
+    doc "The controller will try to reach the given velocity and heading";
+    doc "angular velocity. Note that for safety reasons, a watchdog will";
+    doc "trigger after 500ms and reset the target velocity to zero.";
+
+    validate wamctrl_check_geom(in body.init);
+
+    codel wamctrl_set_velocity(in x, in y, in z, in yaw, ids out reference);
+
+    interrupt servo;
+    throw e_geom;
+  };
+
+  function stop() {
+    doc		"Stop tracking a desired position";
+
+    codel wamctrl_servo_stop(ids out reference);
+
+    interrupt servo;
+  };
+
+
+  /* --- logging ----------------------------------------------------------- */
+
+  activity log(in string<64> path = "/tmp/wamctrl.log": "Log file name",
+               in unsigned long decimation = 1: "Reduced logging frequency") {
+    doc "Log state";
+    task main;
+
+    validate wamctrl_log_open(in path, in decimation, inout log);
+
+    codel<start> wamctrl_log_header(in servo, inout log)
+      yield ether;
+
+    throw e_sys;
+  };
+
+  function log_stop() {
+    doc		"Stop logging";
+
+    codel wamctrl_log_stop(out log);
+  };
+
+  function log_info(out unsigned long miss = :"Missed log entries",
+                    out unsigned long total = :"Total log entries") {
+    doc		"Show missed log entries";
+
+    codel wamctrl_log_info(in log, out miss, out total);
+  };
+
+  function set_urdf(
+    in string value
+  )
+  {
+    codel set_string(in value, out urdf_path);
+  };
+
+  function load_urdf() {
+    doc "Load robot model from URDF file";
+    doc "";
+    doc "The URDF path must be set first with set_urdf().";
+    doc "The model is loaded with a free-flyer base (6 DOF).";
+    doc "Number of joints is automatically detected from the model.";
+
+    codel wamctrl_load_urdf(in urdf_path, inout pinocchio, inout wholebody);
+    throw e_sys;
+  };
+
+  function set_wholebody_gains(
+    in double Kp_base[6] = { 10., 10., 10., 5., 5., 5. } : "Position gains [x,y,z,wx,wy,wz] (N/m, Nm/rad)",
+    in double Kd_base[6] = { 5., 5., 5., 2., 2., 2. } : "Velocity damping [x,y,z,wx,wy,wz] (Ns/m, Nms/rad)",
+    in double Kp_joint[8] = { 10., 10., 10., 10., 10., 10., 10., 10. } : "Joint position gains (Nm/rad)",
+    in double Kd_joint[8] = { 5., 5., 5., 5., 5., 5., 5., 5. } : "Joint velocity damping (Nms/rad)"
+  ) {
+    doc "Set PD gains for whole-body controller";
+    doc "";
+    doc "Control law: τ = g(q) + Kp·e - Kd·q̇";
+    doc "";
+    doc "Units:";
+    doc "- Kp_base[0:3]: translational stiffness (N/m)";
+    doc "- Kp_base[3:6]: rotational stiffness (Nm/rad)";
+    doc "- Kd_base[0:3]: translational damping (Ns/m)";
+    doc "- Kd_base[3:6]: rotational damping (Nms/rad)";
+    doc "- Kp_joint: joint stiffness (Nm/rad)";
+    doc "- Kd_joint: joint damping (Nms/rad)";
+    doc "";
+    doc "Base gains apply to the 6-DOF floating base (translation + rotation).";
+    doc "Joint gains apply to the arm/manipulator joints.";
+
+    codel wamctrl_set_wholebody_gains(in Kp_base, in Kd_base, in Kp_joint, in Kd_joint, inout wholebody);
+  };
+
+  function set_config(
+    in double x = 0. : "Desired X position (m)",
+    in double y = 0. : "Desired Y position (m)",
+    in double z = 1. : "Desired Z position (m)",
+    in double qx = 0. : "Desired quaternion X",
+    in double qy = 0. : "Desired quaternion Y",
+    in double qz = 0. : "Desired quaternion Z",
+    in double qw = 1. : "Desired quaternion W",
+    in double qd[8] = { 0., 0., 0., 0., 0., 0., 0., 0. } : "Desired joint positions (rad)"
+  ) {
+    doc "Set desired whole-body configuration";
+    doc "";
+    doc "Sets base pose (position + quaternion) and joint positions.";
+    doc "The quaternion is automatically normalized.";
+    doc "Also sets reference.pos._present to allow transition to control.";
+
+    codel wamctrl_set_config(in x, in y, in z, in qx, in qy, in qz, in qw, in qd, inout wholebody, ids inout reference);
+  };
+
+  function disable_wholebody() {
+    doc "Disable whole-body controller and revert to legacy position control";
+    doc "";
+    doc "This function disables the whole-body controller, causing the system";
+    doc "to fall back to the legacy SE(3) geometric position controller.";
+    doc "The position integrator is reset to avoid transients during the switch.";
+    doc "To re-enable wholebody control, call load_urdf() again.";
+
+    codel wamctrl_disable_wholebody(inout wholebody);
+  };
+
+  function get_urdf(
+    out string value
+  )
+  {
+    codel get_string(in urdf_path, out value);
+  };
+};

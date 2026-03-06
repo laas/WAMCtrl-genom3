@@ -1,0 +1,1103 @@
+//
+// Copyright (c) 2015-2024 LAAS/CNRS
+// All rights reserved.
+//
+// Redistribution and use  in source  and binary  forms,  with or without
+// modification, are permitted provided that the following conditions are
+// met:
+//
+//   1. Redistributions of  source  code must retain the  above copyright
+//      notice and this list of conditions.
+//   2. Redistributions in binary form must reproduce the above copyright
+//      notice and  this list of  conditions in the  documentation and/or
+//      other materials provided with the distribution.
+//
+//					Johanata Brayan on Tue Mar 05 2026
+//
+
+// This file was generated from wamctrl.gen by the skeleton
+// template. Manual changes should be preserved, although they should
+// rather be added to the "doc" attributes of the genom objects defined in
+// wamctrl.gen.
+
+= wamctrl component
+openrobots@laas.fr
+2.4
+:toc: left
+
+// fix default asciidoctor stylesheet issue #2407 and add hr clear rule
+ifdef::backend-html5[]
+[pass]
+++++
+<link rel="stylesheet" href="data:text/css,p{font-size: inherit !important}" >
+<link rel="stylesheet" href="data:text/css,hr{clear: both}" >
+++++
+endif::[]
+
+
+
+== Ports
+
+
+[[rotor_input]]
+=== rotor_input (out)
+
+
+[role="small", width="50%", float="right", cols="1"]
+|===
+a|.Data structure
+[disc]
+ * `struct ::or_rotorcraft::input` `rotor_input`
+ ** `struct ::or::time::ts` `ts`
+ *** `long` `sec`
+ *** `long` `nsec`
+ ** `enum ::or_rotorcraft::control_type` `control` ∈ { `velocity`, `throttle` }
+ ** `sequence< double, 8 >` `desired`
+
+|===
+
+'''
+
+[[rotor_measure]]
+=== rotor_measure (in)
+
+
+[role="small", width="50%", float="right", cols="1"]
+|===
+a|.Data structure
+[disc]
+ * `struct ::or_rotorcraft::output` `rotor_measure`
+ ** `sequence< struct ::or_rotorcraft::rotor_state, 8 >` `rotor`
+ *** `struct ::or::time::ts` `ts`
+ **** `long` `sec`
+ **** `long` `nsec`
+ *** `boolean` `emerg`
+ *** `boolean` `spinning`
+ *** `boolean` `starting`
+ *** `boolean` `disabled`
+ *** `double` `velocity`
+ *** `double` `throttle`
+ *** `double` `consumption`
+ *** `double` `energy_level`
+
+|===
+
+'''
+
+[[joint_input]]
+=== joint_input (out)
+
+
+[role="small", width="50%", float="right", cols="1"]
+|===
+a|.Data structure
+[disc]
+ * `struct ::or_joint::input` `joint_input`
+ ** `struct ::or::time::ts` `ts`
+ *** `long` `sec`
+ *** `long` `nsec`
+ ** `optional< sequence< double, 8 > >` `position`
+ ** `optional< sequence< double, 8 > >` `velocity`
+ ** `optional< sequence< double, 8 > >` `effort`
+
+|===
+
+'''
+
+[[motors]]
+=== motors (in)
+
+
+[role="small", width="50%", float="right", cols="1"]
+|===
+a|.Data structure
+[disc]
+ * `struct ::or_joint::state` `motors`
+ ** `struct ::or::time::ts` `ts`
+ *** `long` `sec`
+ *** `long` `nsec`
+ ** `sequence< string<32>, 8 >` `name`
+ ** `sequence< struct ::or_joint::flags, 8 >` `flag`
+ *** `boolean` `active`
+ *** `boolean` `emerg`
+ ** `sequence< double, 8 >` `position`
+ ** `sequence< double, 8 >` `velocity`
+ ** `sequence< double, 8 >` `effort`
+
+|===
+
+Provide a view of joints state.
+
+`ts` is the last update time. Other elements are a sequence of up
+to 8 joints, indexed by their id. `name` is a human-readable
+description of the joint and `flag` indicates if the joint is
+present (`active`) or in an 'emergency' state.
+`position` and `velocity` are given in meters and meters per second
+for linear joints and in radians and radians per second for
+revolute joints. `effort` is either the measured force in Newtons
+for linear joints or the torque in Newton meters for revolute
+joints.
+
+'''
+
+[[state]]
+=== state (in)
+
+
+[role="small", width="50%", float="right", cols="1"]
+|===
+a|.Data structure
+[disc]
+ * `struct ::or_pose_estimator::state` `state`
+ ** `struct ::or::time::ts` `ts`
+ *** `long` `sec`
+ *** `long` `nsec`
+ ** `boolean` `intrinsic`
+ ** `optional< struct ::or::t3d::pos >` `pos`
+ *** `double` `x`
+ *** `double` `y`
+ *** `double` `z`
+ ** `optional< struct ::or::t3d::att >` `att`
+ *** `double` `qw`
+ *** `double` `qx`
+ *** `double` `qy`
+ *** `double` `qz`
+ ** `optional< struct ::or::t3d::vel >` `vel`
+ *** `double` `vx`
+ *** `double` `vy`
+ *** `double` `vz`
+ ** `optional< struct ::or::t3d::avel >` `avel`
+ *** `double` `wx`
+ *** `double` `wy`
+ *** `double` `wz`
+ ** `optional< struct ::or::t3d::acc >` `acc`
+ *** `double` `ax`
+ *** `double` `ay`
+ *** `double` `az`
+ ** `optional< struct ::or::t3d::aacc >` `aacc`
+ *** `double` `awx`
+ *** `double` `awy`
+ *** `double` `awz`
+ ** `optional< struct ::or::t3d::pos_cov >` `pos_cov`
+ *** `double` `cov[6]`
+ ** `optional< struct ::or::t3d::att_cov >` `att_cov`
+ *** `double` `cov[10]`
+ ** `optional< struct ::or::t3d::att_pos_cov >` `att_pos_cov`
+ *** `double` `cov[12]`
+ ** `optional< struct ::or::t3d::vel_cov >` `vel_cov`
+ *** `double` `cov[6]`
+ ** `optional< struct ::or::t3d::avel_cov >` `avel_cov`
+ *** `double` `cov[6]`
+ ** `optional< struct ::or::t3d::acc_cov >` `acc_cov`
+ *** `double` `cov[6]`
+ ** `optional< struct ::or::t3d::aacc_cov >` `aacc_cov`
+ *** `double` `cov[6]`
+
+|===
+
+'''
+
+[[reference]]
+=== reference (in)
+
+
+[role="small", width="50%", float="right", cols="1"]
+|===
+a|.Data structure
+[disc]
+ * `struct ::or_rigid_body::state` `reference`
+ ** `struct ::or::time::ts` `ts`
+ *** `long` `sec`
+ *** `long` `nsec`
+ ** `boolean` `intrinsic`
+ ** `optional< struct ::or::t3d::pos >` `pos`
+ *** `double` `x`
+ *** `double` `y`
+ *** `double` `z`
+ ** `optional< struct ::or::t3d::att >` `att`
+ *** `double` `qw`
+ *** `double` `qx`
+ *** `double` `qy`
+ *** `double` `qz`
+ ** `optional< struct ::or::t3d::vel >` `vel`
+ *** `double` `vx`
+ *** `double` `vy`
+ *** `double` `vz`
+ ** `optional< struct ::or::t3d::avel >` `avel`
+ *** `double` `wx`
+ *** `double` `wy`
+ *** `double` `wz`
+ ** `optional< struct ::or::t3d::acc >` `acc`
+ *** `double` `ax`
+ *** `double` `ay`
+ *** `double` `az`
+ ** `optional< struct ::or::t3d::aacc >` `aacc`
+ *** `double` `awx`
+ *** `double` `awy`
+ *** `double` `awz`
+ ** `optional< struct ::or::t3d::jerk >` `jerk`
+ *** `double` `jx`
+ *** `double` `jy`
+ *** `double` `jz`
+ ** `optional< struct ::or::t3d::snap >` `snap`
+ *** `double` `sx`
+ *** `double` `sy`
+ *** `double` `sz`
+
+|===
+
+'''
+
+[[joints]]
+=== joints (in)
+
+
+[role="small", width="50%", float="right", cols="1"]
+|===
+a|.Data structure
+[disc]
+ * `struct ::or_joint::state` `joints`
+ ** `struct ::or::time::ts` `ts`
+ *** `long` `sec`
+ *** `long` `nsec`
+ ** `sequence< string<32>, 8 >` `name`
+ ** `sequence< struct ::or_joint::flags, 8 >` `flag`
+ *** `boolean` `active`
+ *** `boolean` `emerg`
+ ** `sequence< double, 8 >` `position`
+ ** `sequence< double, 8 >` `velocity`
+ ** `sequence< double, 8 >` `effort`
+
+|===
+
+Current joint (motor) measurements.
+Structure is defined by <or/sensor/joint.gen>; see the `joints`
+port documentation for field meanings (names, flags, positions,
+velocities, efforts).
+
+'''
+
+[[wrench_measure]]
+=== wrench_measure (out)
+
+
+[role="small", width="50%", float="right", cols="1"]
+|===
+a|.Data structure
+[disc]
+ * `struct ::or_wrench_estimator::state` `wrench_measure`
+ ** `struct ::or::time::ts` `ts`
+ *** `long` `sec`
+ *** `long` `nsec`
+ ** `boolean` `intrinsic`
+ ** `optional< struct ::or::rb3d::force >` `force`
+ *** `double` `x`
+ *** `double` `y`
+ *** `double` `z`
+ ** `optional< struct ::or::rb3d::force_cov >` `force_cov`
+ *** `double` `cov[6]`
+ ** `optional< struct ::or::rb3d::torque >` `torque`
+ *** `double` `x`
+ *** `double` `y`
+ *** `double` `z`
+ ** `optional< struct ::or::rb3d::torque_cov >` `torque_cov`
+ *** `double` `cov[6]`
+
+|===
+
+Provides current wrench measurements.
+
+This port contains the current wrench exerted by the UAV according
+to the propeller measurements and the geometric model.
+
+'''
+
+== Services
+
+[[set_saturation]]
+=== set_saturation (attribute)
+
+[role="small", width="50%", float="right", cols="1"]
+|===
+a|.Inputs
+[disc]
+ * `struct ::wamctrl::ids::servo_s::sat_s` `sat`
+ ** `double` `x`
+ ** `double` `v`
+ ** `double` `ix`
+
+|===
+
+'''
+
+[[set_saturation_weights]]
+=== set_saturation_weights (attribute)
+
+[role="small", width="50%", float="right", cols="1"]
+|===
+a|.Inputs
+[disc]
+ * `struct ::wamctrl::ids::servo_s::satweight_s` `satweight`
+ ** `boolean` `enable` (default `"1"`) Enable wrench saturation
+ ** `double` `thrust` (default `"10"`) Relative weight for thrust saturation
+ ** `double` `tilt` (default `"100"`) Relative weight for roll and pitch saturation
+ ** `double` `head` (default `"1"`) Relative weight for heading saturation
+
+a|.Throws
+[disc]
+ * `exception ::wamctrl::e_inval`
+ ** `string<128>` `what`
+
+|===
+
+Select relative priority for thrust, titlting and heading.
+
+When the controller reaches the physical wrench limits of the
+platform (see <<set_wlimit>>), an optimisation algorithm finds
+the closest feasible wrench that keeps the same thurst direction
+as well as the same roll and pitch torque direction.
+
+The weights specified here allow to give higher priority to certain
+components of the wrench and let them be less affected by the
+optimization algorithm. Higher weight means that the corresponding
+component is less likely to change in intensity.
+
+'''
+
+[[set_servo_gain]]
+=== set_servo_gain (attribute)
+
+[role="small", width="50%", float="right", cols="1"]
+|===
+a|.Inputs
+[disc]
+ * `struct ::wamctrl::ids::servo_s::gain_s` `gain`
+ ** `double` `Kpxy`
+ ** `double` `Kpz`
+ ** `double` `Kqxy`
+ ** `double` `Kqz`
+ ** `double` `Kvxy`
+ ** `double` `Kvz`
+ ** `double` `Kwxy`
+ ** `double` `Kwz`
+ ** `double` `Kixy`
+ ** `double` `Kiz`
+
+|===
+
+'''
+
+[[set_control_mode]]
+=== set_control_mode (attribute)
+
+[role="small", width="50%", float="right", cols="1"]
+|===
+a|.Inputs
+[disc]
+ * `enum ::wamctrl::attitude_control_mode` `att_mode` (default `"::wamctrl::tilt_prioritized"`) Attitude tracking control law ∈ { `full_attitude`, `tilt_prioritized` }
+
+|===
+
+Select attitude tracking control law.
+
+With `tilt_prioritized`, attitude error is split into a
+reduced attitude error, which describes the misalignment of
+the thrust direction, and a yaw error, which describes the
+heading orientation error. This is the default.
+
+With `full_attitude`, a conventional controller, based on the full
+attitude error, is used.
+
+'''
+
+[[set_wlimit]]
+=== set_wlimit (attribute)
+
+[role="small", width="50%", float="right", cols="1"]
+|===
+a|.Inputs
+[disc]
+ * `double` `wmin` Minimum propeller velocity
+
+ * `double` `wmax` Maximum propeller velocity
+
+|===
+
+'''
+
+[[set_mass]]
+=== set_mass (attribute)
+
+[role="small", width="50%", float="right", cols="1"]
+|===
+a|.Inputs
+[disc]
+ * `double` `mass`
+
+|===
+
+'''
+
+[[set_geom]]
+=== set_geom (attribute)
+
+[role="small", width="50%", float="right", cols="1"]
+|===
+a|.Inputs
+[disc]
+ * `double` `mass` Mass (kg)
+
+ * `double` `G[48]` Mapping from propellers velocity^2 to wrench
+
+ * `double` `J[9]` Inertia matrix
+
+|===
+
+Set mass, allocation matrix and inertia tensor.
+
+This is a generic function for setting the geometric parameters of
+the controlled robot. See <<set_gtmrp_geom>> for a specialized
+function for tilted multi rotors robots.
+
+'''
+
+[[set_gtmrp_geom]]
+=== set_gtmrp_geom (function)
+
+[role="small", width="50%", float="right", cols="1"]
+|===
+a|.Inputs
+[disc]
+ * `unsigned short` `rotors` (default `"4"`) Number of rotors
+
+ * `double` `cx` (default `"0"`) X position of center of rotors wrt center of mass (m)
+
+ * `double` `cy` (default `"0"`) Y position of center of rotors wrt center of mass (m)
+
+ * `double` `cz` (default `"0"`) Z position of center of rotors wrt center of mass (m)
+
+ * `double` `armlen` (default `"0.23"`) Distance of rotors to the center (m)
+
+ * `double` `mass` (default `"1.28"`) Total mass (kg)
+
+ * `double` `mbodyw` (default `"0.11"`) Main mass body width (m)
+
+ * `double` `mbodyh` (default `"0.17"`) Main mass body height (m)
+
+ * `double` `mmotor` (default `"0.07"`) Motor mass (kg)
+
+ * `double` `rx` (default `"0"`) X rotation of the first rotor thrust vector (deg)
+
+ * `double` `ry` (default `"0"`) Y rotation of the first rotor thrust vector (deg)
+
+ * `short` `rz` (default `"-1"`) Z spin direction of the first rotor (1: ccw, -1: cw)
+
+ * `double` `cf` (default `"0.00065"`) Propeller thrust coefficient (N.s²)
+
+ * `double` `ct` (default `"1e-05"`) Propeller torque coefficient (N.m.s²)
+
+a|.Throws
+[disc]
+ * `exception ::wamctrl::e_inval`
+ ** `string<128>` `what`
+
+|===
+
+Compute allocation matrix and inertia tensor for tilt rotors robots.
+
+Generically Tilted Multi-Rotor Platforms (GTMRP) are made of a set
+of rotors evenly distributed in a horizontal plane. The rotors are
+tilted around an axis lying in the plane, all by the same angle but
+with alternating signs on the X axis. The spinning direction is also
+alternating.
+
+This function is a specialization of the more generic <<set_geom>>.
+
+'''
+
+[[set_emerg]]
+=== set_emerg (attribute)
+
+[role="small", width="50%", float="right", cols="1"]
+|===
+a|.Inputs
+[disc]
+ * `struct ::wamctrl::ids::servo_s::emerg_s` `emerg`
+ ** `double` `descent` (default `"0.1"`) Vertical acceleration for emergency descent (m/s²)
+ ** `double` `dx` (default `"0.05"`) Position uncertainty threshold (m, 3σ)
+ ** `double` `dq` (default `"5"`) Attitude uncertainty threshold (deg, 3σ)
+ ** `double` `dv` (default `"0.2"`) Linear velocity uncertainty threshold (m/s, 3σ)
+ ** `double` `dw` (default `"20"`) Angular velocity uncertainty threshold (deg/s, 3σ)
+
+|===
+
+Set thresholds for emergency descent.
+
+Units: All thresholds are expressed as 3σ (3 times standard deviation).
+- dx: position uncertainty in meters
+- dq: attitude uncertainty in degrees (converted internally to rad²)
+- dv: linear velocity uncertainty in m/s
+- dw: angular velocity uncertainty in deg/s (converted internally)
+
+`dx`, `dq`, `dv` and `dw` represent the maximum uncertainty tolerated
+in the input <<state>> for position (`dx`), orientation (`dq`),
+linear velocity (`dv`) and angular velocity (`dw`), measured as 3
+times the standard deviation.
+By default, `dx` is 5cm, `dq` is 5°, `dv` is 20cm/s and `dw` 20°/s.
+Beyond that threshold, an emergency descent is started.
+
+As long as the emergency descent is active, the position error or
+linear velocity error are cancelled (i.e. the desired roll and pitch
+are set to 0) and a vertical acceleration of `descent` (by default
+-0.1 m/s²) is requested. The descent is based on the mass only,
+with no feedback, as the state is considered invalid. If the
+orientation is invalid in the <<state>>, then no control on the
+attitude is possible and the stability is not guaranteed ...
+
+'''
+
+[[get_servo_parameters]]
+=== get_servo_parameters (attribute)
+
+[role="small", width="50%", float="right", cols="1"]
+|===
+a|.Outputs
+[disc]
+ * `struct ::wamctrl::ids::servo_s` `servo`
+ ** `struct ::wamctrl::ids::servo_s::sat_s` `sat`
+ *** `double` `x`
+ *** `double` `v`
+ *** `double` `ix`
+ ** `struct ::wamctrl::ids::servo_s::satweight_s` `satweight`
+ *** `boolean` `enable`
+ *** `double` `thrust`
+ *** `double` `tilt`
+ *** `double` `head`
+ ** `struct ::wamctrl::ids::servo_s::gain_s` `gain`
+ *** `double` `Kpxy`
+ *** `double` `Kpz`
+ *** `double` `Kqxy`
+ *** `double` `Kqz`
+ *** `double` `Kvxy`
+ *** `double` `Kvz`
+ *** `double` `Kwxy`
+ *** `double` `Kwz`
+ *** `double` `Kixy`
+ *** `double` `Kiz`
+ ** `enum ::wamctrl::attitude_control_mode` `att_mode` ∈ { `full_attitude`, `tilt_prioritized` }
+ ** `double` `ramp`
+ ** `double` `scale`
+ ** `struct ::wamctrl::ids::servo_s::emerg_s` `emerg`
+ *** `double` `descent`
+ *** `double` `dx`
+ *** `double` `dq`
+ *** `double` `dv`
+ *** `double` `dw`
+
+|===
+
+'''
+
+[[get_body_parameters]]
+=== get_body_parameters (attribute)
+
+[role="small", width="50%", float="right", cols="1"]
+|===
+a|.Outputs
+[disc]
+ * `struct ::wamctrl::ids::body_s` `body`
+ ** `double` `G[48]`
+ ** `double` `iG[48]`
+ ** `double` `J[9]`
+ ** `double` `mass`
+ ** `unsigned short` `rotors`
+ ** `double` `wmin`
+ ** `double` `wmax`
+ ** `double` `wrench_min[6]`
+ ** `double` `wrench_max[6]`
+ ** `boolean` `init`
+
+|===
+
+'''
+
+[[get_wholebody_parameters]]
+=== get_wholebody_parameters (attribute)
+
+[role="small", width="50%", float="right", cols="1"]
+|===
+a|.Outputs
+[disc]
+ * `struct ::wamctrl::ids::wholebody_s` `wholebody`
+ ** `unsigned short` `nj`
+ ** `double` `Kp_base[6]`
+ ** `double` `Kd_base[6]`
+ ** `double` `Kp_joint[8]`
+ ** `double` `Kd_joint[8]`
+ ** `double` `qd_base[7]`
+ ** `double` `qd_joint[8]`
+ ** `boolean` `init`
+
+|===
+
+'''
+
+[[get_reference]]
+=== get_reference (function)
+
+[role="small", width="50%", float="right", cols="1"]
+|===
+a|.Outputs
+[disc]
+ * `struct ::or_rigid_body::state` `reference`
+ ** `struct ::or::time::ts` `ts`
+ *** `long` `sec`
+ *** `long` `nsec`
+ ** `boolean` `intrinsic`
+ ** `optional< struct ::or::t3d::pos >` `pos`
+ *** `double` `x`
+ *** `double` `y`
+ *** `double` `z`
+ ** `optional< struct ::or::t3d::att >` `att`
+ *** `double` `qw`
+ *** `double` `qx`
+ *** `double` `qy`
+ *** `double` `qz`
+ ** `optional< struct ::or::t3d::vel >` `vel`
+ *** `double` `vx`
+ *** `double` `vy`
+ *** `double` `vz`
+ ** `optional< struct ::or::t3d::avel >` `avel`
+ *** `double` `wx`
+ *** `double` `wy`
+ *** `double` `wz`
+ ** `optional< struct ::or::t3d::acc >` `acc`
+ *** `double` `ax`
+ *** `double` `ay`
+ *** `double` `az`
+ ** `optional< struct ::or::t3d::aacc >` `aacc`
+ *** `double` `awx`
+ *** `double` `awy`
+ *** `double` `awz`
+ ** `optional< struct ::or::t3d::jerk >` `jerk`
+ *** `double` `jx`
+ *** `double` `jy`
+ *** `double` `jz`
+ ** `optional< struct ::or::t3d::snap >` `snap`
+ *** `double` `sx`
+ *** `double` `sy`
+ *** `double` `sz`
+
+|===
+
+'''
+
+[[servo]]
+=== servo (activity)
+
+[role="small", width="50%", float="right", cols="1"]
+|===
+a|.Throws
+[disc]
+ * `exception ::wamctrl::e_input`
+
+ * `exception ::wamctrl::e_geom`
+
+a|.Context
+[disc]
+  * In task `<<main>>`
+  (frequency 1000.0 _Hz_)
+  * Reads port `<<reference>>`
+  * Interrupts `<<servo>>`
+|===
+
+Track a desired position
+
+'''
+
+[[set_state]]
+=== set_state (function)
+
+[role="small", width="50%", float="right", cols="1"]
+|===
+a|.Inputs
+[disc]
+ * `struct ::or::t3d::pos` `pos`: Position
+ ** `double` `x`
+ ** `double` `y`
+ ** `double` `z`
+
+ * `struct ::or::t3d::att` `att`: Orientation
+ ** `double` `qw`
+ ** `double` `qx`
+ ** `double` `qy`
+ ** `double` `qz`
+
+ * `struct ::or::t3d::vel` `vel`: Linear velocity
+ ** `double` `vx`
+ ** `double` `vy`
+ ** `double` `vz`
+
+ * `struct ::or::t3d::avel` `avel`: Angular velocity
+ ** `double` `wx`
+ ** `double` `wy`
+ ** `double` `wz`
+
+ * `struct ::or::t3d::acc` `acc`: Acceleration
+ ** `double` `ax`
+ ** `double` `ay`
+ ** `double` `az`
+
+a|.Throws
+[disc]
+ * `exception ::wamctrl::e_geom`
+
+a|.Context
+[disc]
+  * Interrupts `<<servo>>`
+|===
+
+Set the desired state
+
+'''
+
+[[set_position]]
+=== set_position (function)
+
+[role="small", width="50%", float="right", cols="1"]
+|===
+a|.Inputs
+[disc]
+ * `double` `x`
+
+ * `double` `y`
+
+ * `double` `z`
+
+ * `double` `yaw`
+
+a|.Throws
+[disc]
+ * `exception ::wamctrl::e_geom`
+
+a|.Context
+[disc]
+  * Interrupts `<<servo>>`
+|===
+
+Set the desired position
+
+The controller will hover on the given position and heading, with a
+zero velocity.
+
+'''
+
+[[set_current_position]]
+=== set_current_position (activity)
+
+[role="small", width="50%", float="right", cols="1"]
+|===
+a|.Throws
+[disc]
+ * `exception ::wamctrl::e_input`
+
+ * `exception ::wamctrl::e_geom`
+
+a|.Context
+[disc]
+  * In task `<<main>>`
+  (frequency 1000.0 _Hz_)
+  * Reads port `<<state>>`
+  * Interrupts `<<servo>>`
+|===
+
+Set the desired position to the current state.
+
+The controller will hover on the position and heading currently given
+by the state contained in the port <<state>>, with a zero velocity.
+Note that <<state>> is only read once and the robot will not track
+changes in the state. See <<servo>> for an actual trajectory
+tracking.
+
+'''
+
+[[set_velocity]]
+=== set_velocity (function)
+
+[role="small", width="50%", float="right", cols="1"]
+|===
+a|.Inputs
+[disc]
+ * `double` `x`
+
+ * `double` `y`
+
+ * `double` `z`
+
+ * `double` `yaw`
+
+a|.Throws
+[disc]
+ * `exception ::wamctrl::e_geom`
+
+a|.Context
+[disc]
+  * Interrupts `<<servo>>`
+|===
+
+Set the desired velocity
+
+The controller will try to reach the given velocity and heading
+angular velocity. Note that for safety reasons, a watchdog will
+trigger after 500ms and reset the target velocity to zero.
+
+'''
+
+[[stop]]
+=== stop (function)
+
+[role="small", width="50%", float="right", cols="1"]
+|===
+a|.Context
+[disc]
+  * Interrupts `<<servo>>`
+|===
+
+Stop tracking a desired position
+
+'''
+
+[[log]]
+=== log (activity)
+
+[role="small", width="50%", float="right", cols="1"]
+|===
+a|.Inputs
+[disc]
+ * `string<64>` `path` (default `"/tmp/wamctrl.log"`) Log file name
+
+ * `unsigned long` `decimation` (default `"1"`) Reduced logging frequency
+
+a|.Throws
+[disc]
+ * `exception ::wamctrl::e_sys`
+ ** `short` `code`
+ ** `string<128>` `what`
+
+a|.Context
+[disc]
+  * In task `<<main>>`
+  (frequency 1000.0 _Hz_)
+|===
+
+Log state
+
+'''
+
+[[log_stop]]
+=== log_stop (function)
+
+
+Stop logging
+
+'''
+
+[[log_info]]
+=== log_info (function)
+
+[role="small", width="50%", float="right", cols="1"]
+|===
+a|.Outputs
+[disc]
+ * `unsigned long` `miss` Missed log entries
+
+ * `unsigned long` `total` Total log entries
+
+|===
+
+Show missed log entries
+
+'''
+
+[[set_urdf]]
+=== set_urdf (function)
+
+[role="small", width="50%", float="right", cols="1"]
+|===
+a|.Inputs
+[disc]
+ * `string` `value`
+
+|===
+
+'''
+
+[[load_urdf]]
+=== load_urdf (function)
+
+[role="small", width="50%", float="right", cols="1"]
+|===
+a|.Throws
+[disc]
+ * `exception ::wamctrl::e_sys`
+ ** `short` `code`
+ ** `string<128>` `what`
+
+|===
+
+Load robot model from URDF file
+
+The URDF path must be set first with set_urdf().
+The model is loaded with a free-flyer base (6 DOF).
+Number of joints is automatically detected from the model.
+
+'''
+
+[[set_wholebody_gains]]
+=== set_wholebody_gains (function)
+
+[role="small", width="50%", float="right", cols="1"]
+|===
+a|.Inputs
+[disc]
+ * `double` `Kp_base[6]` Position gains [x,y,z,wx,wy,wz] (N/m, Nm/rad)
+ ** `double` `[0]` (default `"10"`)
+ ** `double` `[1]` (default `"10"`)
+ ** `double` `[2]` (default `"10"`)
+ ** `double` `[3]` (default `"5"`)
+ ** `double` `[4]` (default `"5"`)
+ ** `double` `[5]` (default `"5"`)
+
+ * `double` `Kd_base[6]` Velocity damping [x,y,z,wx,wy,wz] (Ns/m, Nms/rad)
+ ** `double` `[0]` (default `"5"`)
+ ** `double` `[1]` (default `"5"`)
+ ** `double` `[2]` (default `"5"`)
+ ** `double` `[3]` (default `"2"`)
+ ** `double` `[4]` (default `"2"`)
+ ** `double` `[5]` (default `"2"`)
+
+ * `double` `Kp_joint[8]` Joint position gains (Nm/rad)
+ ** `double` `[0]` (default `"10"`)
+ ** `double` `[1]` (default `"10"`)
+ ** `double` `[2]` (default `"10"`)
+ ** `double` `[3]` (default `"10"`)
+ ** `double` `[4]` (default `"10"`)
+ ** `double` `[5]` (default `"10"`)
+ ** `double` `[6]` (default `"10"`)
+ ** `double` `[7]` (default `"10"`)
+
+ * `double` `Kd_joint[8]` Joint velocity damping (Nms/rad)
+ ** `double` `[0]` (default `"5"`)
+ ** `double` `[1]` (default `"5"`)
+ ** `double` `[2]` (default `"5"`)
+ ** `double` `[3]` (default `"5"`)
+ ** `double` `[4]` (default `"5"`)
+ ** `double` `[5]` (default `"5"`)
+ ** `double` `[6]` (default `"5"`)
+ ** `double` `[7]` (default `"5"`)
+
+|===
+
+Set PD gains for whole-body controller
+
+Control law: τ = g(q) + Kp·e - Kd·q̇
+
+Units:
+- Kp_base[0:3]: translational stiffness (N/m)
+- Kp_base[3:6]: rotational stiffness (Nm/rad)
+- Kd_base[0:3]: translational damping (Ns/m)
+- Kd_base[3:6]: rotational damping (Nms/rad)
+- Kp_joint: joint stiffness (Nm/rad)
+- Kd_joint: joint damping (Nms/rad)
+
+Base gains apply to the 6-DOF floating base (translation + rotation).
+Joint gains apply to the arm/manipulator joints.
+
+'''
+
+[[set_config]]
+=== set_config (function)
+
+[role="small", width="50%", float="right", cols="1"]
+|===
+a|.Inputs
+[disc]
+ * `double` `x` (default `"0"`) Desired X position (m)
+
+ * `double` `y` (default `"0"`) Desired Y position (m)
+
+ * `double` `z` (default `"1"`) Desired Z position (m)
+
+ * `double` `qx` (default `"0"`) Desired quaternion X
+
+ * `double` `qy` (default `"0"`) Desired quaternion Y
+
+ * `double` `qz` (default `"0"`) Desired quaternion Z
+
+ * `double` `qw` (default `"1"`) Desired quaternion W
+
+ * `double` `qd[8]` Desired joint positions (rad)
+ ** `double` `[0]` (default `"0"`)
+ ** `double` `[1]` (default `"0"`)
+ ** `double` `[2]` (default `"0"`)
+ ** `double` `[3]` (default `"0"`)
+ ** `double` `[4]` (default `"0"`)
+ ** `double` `[5]` (default `"0"`)
+ ** `double` `[6]` (default `"0"`)
+ ** `double` `[7]` (default `"0"`)
+
+|===
+
+Set desired whole-body configuration
+
+Sets base pose (position + quaternion) and joint positions.
+The quaternion is automatically normalized.
+Also sets reference.pos._present to allow transition to control.
+
+'''
+
+[[disable_wholebody]]
+=== disable_wholebody (function)
+
+
+Disable whole-body controller and revert to legacy position control
+
+This function disables the whole-body controller, causing the system
+to fall back to the legacy SE(3) geometric position controller.
+The position integrator is reset to avoid transients during the switch.
+To re-enable wholebody control, call load_urdf() again.
+
+'''
+
+[[get_urdf]]
+=== get_urdf (function)
+
+[role="small", width="50%", float="right", cols="1"]
+|===
+a|.Outputs
+[disc]
+ * `string` `value`
+
+|===
+
+'''
+
+== Tasks
+
+[[main]]
+=== main
+
+[role="small", width="50%", float="right", cols="1"]
+|===
+a|.Context
+[disc]
+  * Frequency 1000.0 _Hz_
+* Updates port `<<rotor_input>>`
+* Reads port `<<rotor_measure>>`
+* Updates port `<<joint_input>>`
+* Reads port `<<state>>`
+* Reads port `<<joints>>`
+* Updates port `<<wrench_measure>>`
+|===
+
+'''

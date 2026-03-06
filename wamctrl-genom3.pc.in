@@ -1,0 +1,16 @@
+# pkg-config file for wamctrl interface and codels library
+#
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+libdir=@libdir@
+includedir=@includedir@
+datarootdir=@datarootdir@
+idldir=@datadir@/idl
+
+Name: wamctrl-genom3
+Description: wamctrl interface and codels library
+Version: @PACKAGE_VERSION@
+Requires: @requires_SPEC@
+Cflags: -I${includedir} -I${idldir}
+Libs: -L${libdir} -lwamctrl_codels
+Libs.private: @codels_requires_LIBS@

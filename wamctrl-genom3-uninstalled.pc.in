@@ -1,0 +1,12 @@
+# pkg-config file for uninstalled wamctrl interface and codels library
+#
+prefix=@abs_top_builddir@
+libdir=${prefix}/codels
+includedir=${prefix}/codels
+
+Name: wamctrl-genom3
+Description: wamctrl interface and codels library
+Version: @PACKAGE_VERSION@
+Requires: @requires_SPEC@
+Libs: ${libdir}/libwamctrl_codels.la
+Libs.private: @codels_requires_LIBS@
