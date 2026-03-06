@@ -23,10 +23,10 @@ libwamctrl_codels_la_SOURCES  =	wamctrl_c_types.h
 libwamctrl_codels_la_SOURCES +=	wamctrl_codels.c
 libwamctrl_codels_la_SOURCES +=	wamctrl_main_codels.c
 
-libmy_first_genom_codels_la_SOURCES += controller.cc
-libmy_first_genom_codels_la_SOURCES += geometry.cc
-libmy_first_genom_codels_la_SOURCES += pinocchio_codels.cc
-libmy_first_genom_codels_la_SOURCES += codels.h
+libwamctrl_codels_la_SOURCES += controller.cc
+libwamctrl_codels_la_SOURCES += geometry.cc
+libwamctrl_codels_la_SOURCES += pinocchio_codels.cc
+libwamctrl_codels_la_SOURCES += codels.h
 
 libwamctrl_codels_la_CPPFLAGS =	$(requires_CFLAGS)
 libwamctrl_codels_la_LIBADD   =	$(requires_LIBS)
