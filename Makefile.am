@@ -18,7 +18,7 @@ ACLOCAL_AMFLAGS=	-I autoconf
 
 # IDL source files
 idldir=		$(datadir)/idl/wamctrl
-nobase_dist_idl_DATA= <built-in> <command-line> wamctrl.gen
+nobase_dist_idl_DATA = wamctrl.gen
 
 pkgconfigdir=	$(libdir)/pkgconfig
 pkgconfig_DATA=
