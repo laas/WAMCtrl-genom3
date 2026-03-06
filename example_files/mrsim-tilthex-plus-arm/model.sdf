@@ -1,0 +1,711 @@
+<?xml version="1.0" ?>
+
+<sdf version="1.5">
+  <model name="mrsim-tilthex">
+    <link name="base">
+      <inertial>
+        <mass>2.3</mass>
+        <inertia>
+          <ixx>0.0115</ixx><ixy>0</ixy><ixz>0</ixz>
+          <iyy>0.0114</iyy><iyz>0</iyz>
+          <izz>0.0194</izz>
+        </inertia>
+      </inertial>
+
+      <collision name="base">
+	<pose>0 0 0 0 0 0</pose>
+        <geometry>
+          <cylinder><radius>0.1354</radius><length>0.05</length></cylinder>
+        </geometry>
+      </collision>
+      <!-- three spheres to make contact stable -->
+      <collision name="land_1">
+        <pose>0.2 0 -0.21 0 0 0</pose>
+        <geometry>
+          <sphere><radius>0.03</radius></sphere>
+        </geometry>
+      </collision>
+      <collision name="land_2">
+        <pose>-0.1 0.173 -0.21 0 0 0</pose>
+        <geometry>
+          <sphere><radius>0.03</radius></sphere>
+        </geometry>
+      </collision>
+      <collision name="land_3">
+        <pose>-0.1 -0.173 -0.21 0 0 0</pose>
+        <geometry>
+          <sphere><radius>0.03</radius></sphere>
+        </geometry>
+      </collision>
+
+      <visual name="body">
+        <geometry>
+          <cylinder><radius>0.1354</radius><length>0.05</length></cylinder>
+        </geometry>
+        <material>
+          <ambient>0.4 0.6 1.0 1</ambient>
+          <diffuse>0.4 0.6 1.0 1</diffuse>
+        </material>
+      </visual>
+
+      <visual name="lander-1">
+        <pose>0.1025 0.1776 -0.11 3.1416 -0.1736 1.0472</pose>
+        <geometry>
+          <cylinder><radius>0.01</radius><length>0.25</length></cylinder>
+        </geometry>
+        <material>
+          <ambient>0 0 0 1.0</ambient>
+          <diffuse>0 0 0 1.0</diffuse>
+        </material>
+      </visual>
+
+      <visual name="lander-2">
+        <pose>-0.1025 0.1776 -0.11 3.1416 -0.1736 2.0944</pose>
+        <geometry>
+          <cylinder><radius>0.01</radius><length>0.25</length></cylinder>
+        </geometry>
+        <material>
+          <ambient>0 0 0 1.0</ambient>
+          <diffuse>0 0 0 1.0</diffuse>
+        </material>
+      </visual>
+
+      <visual name="lander-3">
+       <pose>-0.1025 -0.1776 -0.11 3.1416 0.1736 1.0472</pose>
+        <geometry>
+          <cylinder><radius>0.01</radius><length>0.25</length></cylinder>
+        </geometry>
+        <material>
+          <ambient>0 0 0 1.0</ambient>
+          <diffuse>0 0 0 1.0</diffuse>
+        </material>
+      </visual>
+
+      <visual name="lander-4">
+        <pose>0.1025 -0.1776 -0.11 3.1416 0.1736 2.0944</pose>
+        <geometry>
+          <cylinder><radius>0.01</radius><length>0.25</length></cylinder>
+        </geometry>
+        <material>
+          <ambient>0 0 0 1.0</ambient>
+          <diffuse>0 0 0 1.0</diffuse>
+        </material>
+      </visual>
+
+
+      <visual name="arm-1">
+        <pose>0.2150 0 0 0 1.5708 0</pose>
+        <geometry>
+          <cylinder><radius>0.01</radius><length>0.38998</length></cylinder>
+        </geometry>
+        <material>
+          <ambient>1.0 0.2 0.2 1.0</ambient>
+          <diffuse>1.0 0.2 0.2 1.0</diffuse>
+        </material>
+      </visual>
+      <visual name="arm-2">
+        <pose>0.1025 0.1776 0 0 1.5708 1.0472</pose>
+        <geometry>
+          <cylinder><radius>0.01</radius><length>0.40998</length></cylinder>
+        </geometry>
+        <material>
+          <ambient>0.6 0.6 0.6 1</ambient>
+          <diffuse>0.6 0.6 0.6 1</diffuse>
+        </material>
+      </visual>
+      <visual name="arm-3">
+        <pose>-0.1025 0.1776 0 0 1.5708 2.0944</pose>
+        <geometry>
+          <cylinder><radius>0.01</radius><length>0.40998</length></cylinder>
+        </geometry>
+        <material>
+          <ambient>0.6 0.6 0.6 1</ambient>
+          <diffuse>0.6 0.6 0.6 1</diffuse>
+        </material>
+      </visual>
+      <visual name="arm-4">
+        <pose>-0.2150 0 0 0 1.5708 0</pose>
+        <geometry>
+          <cylinder><radius>0.01</radius><length>0.38998</length></cylinder>
+        </geometry>
+        <material>
+          <ambient>0.6 0.6 0.6 1</ambient>
+          <diffuse>0.6 0.6 0.6 1</diffuse>
+        </material>
+      </visual>
+      <visual name="arm-5">
+        <pose>-0.1025 -0.1776 0 0 1.5708 -2.0944</pose>
+        <geometry>
+          <cylinder><radius>0.01</radius><length>0.40998</length></cylinder>
+        </geometry>
+        <material>
+          <ambient>0.6 0.6 0.6 1</ambient>
+          <diffuse>0.6 0.6 0.6 1</diffuse>
+        </material>
+      </visual>
+      <visual name="arm-6">
+        <pose>0.1025 -0.1776 0 0 1.5708 -1.0472</pose>
+        <geometry>
+          <cylinder><radius>0.01</radius><length>0.40998</length></cylinder>
+        </geometry>
+        <material>
+          <ambient>0.6 0.6 0.6 1</ambient>
+          <diffuse>0.6 0.6 0.6 1</diffuse>
+        </material>
+      </visual>
+    </link>
+
+    <include>
+      <uri>model://mrsim-rotor</uri>
+      <name>rotor-1</name>
+      <pose>0.38998 0 0 -0.349066 0 0</pose>
+    </include>
+    <joint name="motor-1" type="revolute">
+      <parent>base</parent>
+      <child>rotor-1::propeller</child>
+      <axis><xyz>0 0 1</xyz></axis>
+    </joint>
+
+    <include>
+      <uri>model://mrsim-rotor</uri>
+      <name>rotor-2</name>
+      <pose>0.195 0.3377 0 0.349066 0 1.0472</pose>
+    </include>
+    <joint name="motor-2" type="revolute">
+      <parent>base</parent>
+      <child>rotor-2::propeller</child>
+      <axis><xyz>0 0 1</xyz></axis>
+    </joint>
+
+    <include>
+      <uri>model://mrsim-rotor</uri>
+      <name>rotor-3</name>
+      <pose>-0.195 0.3377 0 -0.349066 0 2.0944</pose>
+    </include>
+    <joint name="motor-3" type="revolute">
+      <parent>base</parent>
+      <child>rotor-3::propeller</child>
+      <axis><xyz>0 0 1</xyz></axis>
+    </joint>
+
+    <include>
+      <uri>model://mrsim-rotor</uri>
+      <name>rotor-4</name>
+      <pose>-0.38998 0 0 -0.349066 0 0</pose>
+    </include>
+    <joint name="motor-4" type="revolute">
+      <parent>base</parent>
+      <child>rotor-4::propeller</child>
+      <axis><xyz>0 0 1</xyz></axis>
+    </joint>
+
+    <include>
+      <uri>model://mrsim-rotor</uri>
+      <name>rotor-5</name>
+      <pose>-0.195 -0.3377 0 0.349066 0 1.0472</pose>
+    </include>
+    <joint name="motor-5" type="revolute">
+      <parent>base</parent>
+      <child>rotor-5::propeller</child>
+      <axis><xyz>0 0 1</xyz></axis>
+    </joint>
+
+    <include>
+      <uri>model://mrsim-rotor</uri>
+      <name>rotor-6</name>
+      <pose>0.195 -0.3377 0 -0.349066 0 2.0944</pose>
+    </include>
+    <joint name="motor-6" type="revolute">
+      <parent>base</parent>
+      <child>rotor-6::propeller</child>
+      <axis><xyz>0 0 1</xyz></axis>
+    </joint>
+    
+    <joint name="base-to-arm" type="fixed">
+      <parent>base</parent>
+      <child>arm_base</child>
+      <axis><xyz>0 0 1</xyz></axis>
+    </joint>
+    
+    <link name='arm_base'>
+      <pose>0 0 -0.025 3.1415 0 0</pose>
+      <inertial>
+        <pose>0 0 0.0641 0 0 0</pose>
+        <mass>0.412</mass>
+        <inertia>
+          <ixx>0.000788644</ixx>
+          <ixy>0</ixy>
+          <ixz>0</ixz>
+          <iyy>0.000788644</iyy>
+          <iyz>-0.000002208</iyz>
+          <izz>0.000511741</izz>
+        </inertia>
+      </inertial>
+      <collision name='arm_base_geom_collision'>
+        <pose>0 0 0.035 0 0 0</pose>
+        <geometry>
+          <cylinder>
+            <length>0.07</length>
+            <radius>0.043</radius>
+          </cylinder>
+        </geometry>
+        <surface>
+          <contact>
+            <ode/>
+          </contact>
+          <friction>
+            <ode/>
+          </friction>
+        </surface>
+      </collision>
+      <visual name='arm_base_visual_visual'>
+        <pose>0 0 0.035 0 0 0</pose>
+        <geometry>
+          <cylinder>
+            <length>0.07</length>
+            <radius>0.043</radius>
+          </cylinder>
+        </geometry>
+        <material>
+          <script>
+            <name>Gazebo/Black</name>
+            <uri>file://media/materials/scripts/gazebo.material</uri>
+          </script>
+          <diffuse>0 0 0 1</diffuse>
+          <ambient>0 0 0 1</ambient>
+        </material>
+      </visual>
+      <self_collide>true</self_collide>
+    </link>
+    <joint name='joint1' type='revolute'>
+      <pose relative_to='arm_base'>0 0 0.053999999999999999 0 0 0</pose>
+      <parent>arm_base</parent>
+      <child>link1</child>
+      <axis>
+        <xyz>0 0 1</xyz>
+        <limit>
+          <lower>-100</lower>
+          <upper>100</upper>
+          <effort>50</effort>
+          <velocity>5</velocity>
+        </limit>
+        <dynamics>
+          <damping>5.3000000000000001e-06</damping>
+          <friction>0.20000000000000001</friction>
+          <spring_reference>0</spring_reference>
+          <spring_stiffness>0</spring_stiffness>
+        </dynamics>
+      </axis>
+    </joint>
+    <link name='link1'>
+      <pose relative_to='joint1'>0 0 0 0 0 0</pose>
+      <inertial>
+        <pose>0 0 0.104 0 0 0</pose>
+        <mass>0.276</mass>
+        <inertia>
+          <ixx>0.001342508</ixx>
+          <ixy>0</ixy>
+          <ixz>0</ixz>
+          <iyy>0.001342508</iyy>
+          <iyz>0</iyz>
+          <izz>0.000152961</izz>
+        </inertia>
+      </inertial>
+      <collision name='link1_geom_collision'>
+        <pose>0 0 0.07 0 0 0</pose>
+        <geometry>
+          <cylinder>
+            <length>0.09</length>
+            <radius>0.04</radius>
+          </cylinder>
+        </geometry>
+        <surface>
+          <contact>
+            <ode/>
+          </contact>
+          <friction>
+            <ode/>
+          </friction>
+        </surface>
+      </collision>
+      <visual name='link1_visual_visual'>
+        <pose>0 0 0.07 0 0 0</pose>
+        <geometry>
+          <cylinder>
+            <length>0.09</length>
+            <radius>0.04</radius>
+          </cylinder>
+        </geometry>
+        <material>
+          <script>
+            <name>Gazebo/Black</name>
+            <uri>file://media/materials/scripts/gazebo.material</uri>
+          </script>
+          <diffuse>0 0 0 1</diffuse>
+          <ambient>0 0 0 1</ambient>
+        </material>
+      </visual>
+      <self_collide>true</self_collide>
+    </link>
+    <joint name='joint2' type='revolute'>
+      <pose relative_to='link1'>0 0 0.16700000000000001 1.5707 0 0</pose>
+      <parent>link1</parent>
+      <child>link2</child>
+      <axis>
+        <xyz>0 0 1</xyz>
+        <limit>
+          <lower>-6.2830000000000004</lower>
+          <upper>6.2830000000000004</upper>
+          <effort>50</effort>
+          <velocity>5</velocity>
+        </limit>
+        <dynamics>
+          <damping>4.1999999999999996e-06</damping>
+          <friction>0.11</friction>
+          <spring_reference>0</spring_reference>
+          <spring_stiffness>0</spring_stiffness>
+        </dynamics>
+      </axis>
+    </joint>
+    <link name='link2'>
+      <pose relative_to='joint2'>0 0 0 0 0 0</pose>
+      <inertial>
+        <pose>0.21 0 0.0036 0 0 0</pose>
+        <mass>0.554</mass>
+        <inertia>
+          <ixx>0.00030867</ixx>
+          <ixy>0</ixy>
+          <ixz>0.00006842</ixz>
+          <iyy>0.00629935</iyy>
+          <iyz>0</iyz>
+          <izz>0.006337563</izz>
+        </inertia>
+      </inertial>
+      <collision name='link2_geom1_collision'>
+        <pose>0.115 0 0 0 0 0</pose>
+        <geometry>
+          <box>
+            <size>0.31 0.08 0.04</size>
+          </box>
+        </geometry>
+        <surface>
+          <contact>
+            <ode/>
+          </contact>
+          <friction>
+            <ode/>
+          </friction>
+        </surface>
+      </collision>
+      <collision name='link2_geom2_collision_1'>
+        <pose>0.295 0 0 0 1.5707 0</pose>
+        <geometry>
+          <cylinder>
+            <length>0.0475</length>
+            <radius>0.04</radius>
+          </cylinder>
+        </geometry>
+        <surface>
+          <contact>
+            <ode/>
+          </contact>
+          <friction>
+            <ode/>
+          </friction>
+        </surface>
+      </collision>
+      <visual name='link2_visual1_visual'>
+        <pose>0.115 0 0 0 0 0</pose>
+        <geometry>
+          <box>
+            <size>0.31 0.08 0.04</size>
+          </box>
+        </geometry>
+        <material>
+          <script>
+            <name>Gazebo/Green</name>
+            <uri>file://media/materials/scripts/gazebo.material</uri>
+          </script>
+          <diffuse>0 1 0 1</diffuse>
+          <ambient>0 1 0 1</ambient>
+        </material>
+      </visual>
+      <visual name='link2_visual2_visual_1'>
+        <pose>0.295 0 0 0 1.5707 0</pose>
+        <geometry>
+          <cylinder>
+            <length>0.0475</length>
+            <radius>0.04</radius>
+          </cylinder>
+        </geometry>
+        <material>
+          <script>
+            <name>Gazebo/Green</name>
+            <uri>file://media/materials/scripts/gazebo.material</uri>
+          </script>
+          <diffuse>0 1 0 1</diffuse>
+          <ambient>0 1 0 1</ambient>
+        </material>
+      </visual>
+      <self_collide>true</self_collide>
+    </link>
+    <!-- Use only two first links
+    <joint name='joint3' type='revolute'>
+      <pose relative_to='link2'>0.29999999999999999 0 0 0 1.5706999999997038 0</pose>
+      <parent>link2</parent>
+      <child>link3</child>
+      <axis>
+        <xyz>0 0 1</xyz>
+        <limit>
+          <lower>-100</lower>
+          <upper>100</upper>
+          <effort>50</effort>
+          <velocity>5</velocity>
+        </limit>
+        <dynamics>
+          <damping>7.9999999999999996e-06</damping>
+          <friction>0.14999999999999999</friction>
+          <spring_reference>0</spring_reference>
+          <spring_stiffness>0</spring_stiffness>
+        </dynamics>
+      </axis>
+    </joint>
+    <link name='link3'>
+      <pose relative_to='joint3'>0 0 0 0 0 0</pose>
+      <inertial>
+        <pose>0.0039 0 0.189 0 0 0</pose>
+        <mass>0.528</mass>
+        <inertia>
+          <ixx>0.006580241</ixx>
+          <ixy>0</ixy>
+          <ixz>0.000044894</ixz>
+          <iyy>0.006537977</iyy>
+          <iyz>0</iyz>
+          <izz>0.000317094</izz>
+        </inertia>
+      </inertial>
+      <collision name='link3_geom1_collision'>
+        <pose>0 0 0.05 0 0 0</pose>
+        <geometry>
+          <cylinder>
+            <length>0.05</length>
+            <radius>0.04</radius>
+          </cylinder>
+        </geometry>
+        <surface>
+          <contact>
+            <ode/>
+          </contact>
+          <friction>
+            <ode/>
+          </friction>
+        </surface>
+      </collision>
+      <collision name='link3_geom2_collision_1'>
+        <pose>0 0 0.22 0 0 0</pose>
+        <geometry>
+          <box>
+            <size>0.04 0.08 0.31</size>
+          </box>
+        </geometry>
+        <surface>
+          <contact>
+            <ode/>
+          </contact>
+          <friction>
+            <ode/>
+          </friction>
+        </surface>
+      </collision>
+      <visual name='link3_visual1_visual'>
+        <pose>0 0 0.05 0 0 0</pose>
+        <geometry>
+          <cylinder>
+            <length>0.05</length>
+            <radius>0.04</radius>
+          </cylinder>
+        </geometry>
+        <material>
+          <script>
+            <name>Gazebo/Black</name>
+            <uri>file://media/materials/scripts/gazebo.material</uri>
+          </script>
+          <diffuse>0 0 0 1</diffuse>
+          <ambient>0 0 0 1</ambient>
+        </material>
+      </visual>
+      <visual name='link3_visual2_visual_1'>
+        <pose>0 0 0.22 0 0 0</pose>
+        <geometry>
+          <box>
+            <size>0.04 0.08 0.31</size>
+          </box>
+        </geometry>
+        <material>
+          <script>
+            <name>Gazebo/Black</name>
+            <uri>file://media/materials/scripts/gazebo.material</uri>
+          </script>
+          <diffuse>0 0 0 1</diffuse>
+          <ambient>0 0 0 1</ambient>
+        </material>
+      </visual>
+      <self_collide>true</self_collide>
+    </link>
+    <joint name='joint4' type='revolute'>
+      <pose relative_to='link3'>0 0 0.33000000000000002 0 -1.5706999999997038 0</pose>
+      <parent>link3</parent>
+      <child>link4</child>
+      <axis>
+        <xyz>0 0 1</xyz>
+        <limit>
+          <lower>-100</lower>
+          <upper>100</upper>
+          <effort>50</effort>
+          <velocity>5</velocity>
+        </limit>
+        <dynamics>
+          <damping>4.1999999999999996e-06</damping>
+          <friction>0.11</friction>
+          <spring_reference>0</spring_reference>
+          <spring_stiffness>0</spring_stiffness>
+        </dynamics>
+      </axis>
+    </joint>
+    <link name='link4'>
+      <pose relative_to='joint4'>0 0 0 0 0 0</pose>
+      <inertial>
+        <pose>0.04755813953488372 0 0 0 0 0</pose>
+        <mass>0.129</mass>
+        <inertia>
+          <ixx>5.0951000000000001e-05</ixx>
+          <ixy>0</ixy>
+          <ixz>4.4894000000000001e-05</ixz>
+          <iyy>0.0001982128139534884</iyy>
+          <iyz>0</iyz>
+          <izz>0.00019144381395348839</izz>
+        </inertia>
+      </inertial>
+      <collision name='link4_geom_collision'>
+        <pose>0.040000000000000001 0 0 0 0 0</pose>
+        <geometry>
+          <box>
+            <size>0.10000000000000001 0.040000000000000001 0.059999999999999998</size>
+          </box>
+        </geometry>
+        <surface>
+          <contact>
+            <ode/>
+          </contact>
+          <friction>
+            <ode/>
+          </friction>
+        </surface>
+      </collision>
+      <collision name='link4_fixed_joint_lump__markers_geom_collision_1'>
+        <pose>0.10000000000000001 0 0 0 1.5707963267948966 0</pose>
+        <geometry>
+          <box>
+            <size>0.050000000000000003 0.050000000000000003 0.029999999999999999</size>
+          </box>
+        </geometry>
+      </collision>
+      <visual name='link4_visual_visual'>
+        <pose>0.040000000000000001 0 0 0 0 0</pose>
+        <geometry>
+          <box>
+            <size>0.10000000000000001 0.040000000000000001 0.059999999999999998</size>
+          </box>
+        </geometry>
+        <material>
+          <script>
+            <name>Gazebo/Green</name>
+            <uri>file://media/materials/scripts/gazebo.material</uri>
+          </script>
+          <diffuse>0 1 0 1</diffuse>
+          <ambient>0 1 0 1</ambient>
+        </material>
+      </visual>
+      <visual name='link4_fixed_joint_lump__markers_visual_visual_1'>
+        <pose>0.10000000000000001 0 0 0 1.5707963267948966 0</pose>
+        <geometry>
+          <box>
+            <size>0.050000000000000003 0.050000000000000003 0.029999999999999999</size>
+          </box>
+        </geometry>
+        <material>
+          <script>
+            <name>Gazebo/Black</name>
+            <uri>file://media/materials/scripts/gazebo.material</uri>
+          </script>
+          <diffuse>0 0 0 1</diffuse>
+          <ambient>0 0 0 1</ambient>
+        </material>
+      </visual>
+      <self_collide>true</self_collide>
+    </link>
+    -->
+    
+    <plugin name='dxsim' filename='dxsim-gazebo.so'>
+      <pty>/tmp/pty-boomslang</pty>
+      <motors>
+        <motor>
+          <joint spin='ccw'>joint1</joint>
+          <p0>0.0</p0>
+          <id>1</id>
+          <noise>0.001</noise>
+          <debug>0</debug>
+        </motor>
+        <motor>
+          <joint spin='ccw'>joint2</joint>
+          <p0>0.0</p0>
+          <id>2</id>
+          <noise>0.001</noise>
+          <debug>0</debug>
+        </motor>
+        <motor>
+          <joint spin='ccw'>joint3</joint>
+          <p0>0.0</p0>
+          <id>3</id>
+          <noise>0.001</noise>
+          <debug>0</debug>
+        </motor>
+        <motor>
+          <joint spin='ccw'>joint4</joint>
+          <p0>0.0</p0>
+          <id>4</id>
+          <noise>0.001</noise>
+          <debug>0</debug>
+        </motor>
+      </motors>
+    </plugin>
+
+    <!-- Attention! SDF converter merged link "link 4" and link "markers"
+    <frame name='fixed_markers' attached_to='link4'>
+      <pose>0.074999999999999997 0 0 0 0 0</pose>
+    </frame>
+    <frame name='markers' attached_to='fixed_markers'>
+      <pose>0 0 0 0 0 0</pose>
+    </frame>
+    -->
+
+    <plugin name="mrsim" filename="mrsim-gazebo.so">
+      <link>base</link>
+
+      <rotors>
+        <noise>0.01</noise>
+        <cf>13.0e-4</cf>
+        <ct>1.996e-5</ct>
+        <vfxy>0.5</vfxy><vfz>0.4</vfz>
+        <vtxy>0.2</vtxy><vtz>0.2</vtz>
+
+        <rotor><joint spin="cw">motor-1</joint></rotor>
+        <rotor><joint spin="ccw">motor-2</joint></rotor>
+        <rotor><joint spin="cw">motor-3</joint></rotor>
+        <rotor><joint spin="ccw">motor-4</joint></rotor>
+        <rotor><joint spin="cw">motor-5</joint></rotor>
+        <rotor><joint spin="ccw">motor-6</joint></rotor>
+      </rotors>
+    </plugin>
+</model>
+</sdf>

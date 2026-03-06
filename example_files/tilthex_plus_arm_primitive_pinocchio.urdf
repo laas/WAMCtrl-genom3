@@ -1,0 +1,726 @@
+<?xml version="1.0" ?>
+
+<robot name="tilthex">
+  <link name="base">
+    <inertial>
+      <mass value="2.3"/>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <inertia ixx="0.0115" ixy="0" ixz="0" iyy="0.0114" iyz="0" izz="0.0194"/>
+    </inertial>
+    <collision name="base">
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <cylinder radius="0.1354" length="0.05"/>
+      </geometry>
+    </collision>
+    <!-- three spheres to make contact stable -->
+    <collision name="land_1">
+      <origin xyz="0.2 0 -0.21" rpy="0 0 0"/>
+      <geometry>
+        <sphere radius="0.03"/>
+      </geometry>
+    </collision>
+    <collision name="land_2">
+      <origin xyz="-0.1 0.173 -0.21" rpy="0 0 0"/>
+      <geometry>
+        <sphere radius="0.03"/>
+      </geometry>
+    </collision>
+    <collision name="land_3">
+      <origin xyz="-0.1 -0.173 -0.21" rpy="0 0 0"/>
+      <geometry>
+        <sphere radius="0.03"/>
+      </geometry>
+    </collision>
+    <visual name="body">
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <cylinder radius="0.1354" length="0.05"/>
+      </geometry>
+      <material name="sky-blue">
+        <color rgba="0.4 0.6 1.0 1"/>
+      </material>
+    </visual>
+    <visual name="lander-1">
+      <origin xyz="0.1025 0.1776 -0.11" rpy="3.1416 -0.1736 1.0472"/>
+      <geometry>
+        <cylinder radius="0.01" length="0.25"/>
+      </geometry>
+      <material name="black">
+        <color rgba="0 0 0 1.0"/>
+      </material>
+    </visual>
+    <visual name="lander-2">
+      <origin xyz="-0.1025 0.1776 -0.11" rpy="3.1416 -0.1736 2.0944"/>
+      <geometry>
+        <cylinder radius="0.01" length="0.25"/>
+      </geometry>
+      <material name="black">
+        <color rgba="0 0 0 1.0"/>
+      </material>
+    </visual>
+    <visual name="lander-3">
+      <origin xyz="-0.1025 -0.1776 -0.11" rpy="3.1416 0.1736 1.0472"/>
+      <geometry>
+        <cylinder radius="0.01" length="0.25"/>
+      </geometry>
+      <material name="black">
+        <color rgba="0 0 0 1.0"/>
+      </material>
+    </visual>
+    <visual name="lander-4">
+      <origin xyz="0.1025 -0.1776 -0.11" rpy="3.1416 0.1736 2.0944"/>
+      <geometry>
+        <cylinder radius="0.01" length="0.25"/>
+      </geometry>
+      <material name="black">
+        <color rgba="0 0 0 1.0"/>
+      </material>
+    </visual>
+    <visual name="arm-1">
+      <origin xyz="0.2150 0 0" rpy="0 1.5708 0"/>
+      <geometry>
+        <cylinder radius="0.01" length="0.38998"/>
+      </geometry>
+      <material name="red">
+        <color rgba="1.0 0.2 0.2 1.0"/>
+      </material>
+    </visual>
+    <visual name="arm-2">
+      <origin xyz="0.1025 0.1776 0" rpy="0 1.5708 1.0472"/>
+      <geometry>
+        <cylinder radius="0.01" length="0.40998"/>
+      </geometry>
+      <material name="gray">
+        <color rgba="0.6 0.6 0.6 1"/>
+      </material>
+    </visual>
+    <visual name="arm-3">
+      <origin xyz="-0.1025 0.1776 0" rpy="0 1.5708 2.0944"/>
+      <geometry>
+        <cylinder radius="0.01" length="0.40998"/>
+      </geometry>
+      <material name="gray">
+        <color rgba="0.6 0.6 0.6 1"/>
+      </material>
+    </visual>
+    <visual name="arm-4">
+      <origin xyz="-0.2150 0 0" rpy="0 1.5708 0"/>
+      <geometry>
+        <cylinder radius="0.01" length="0.38998"/>
+      </geometry>
+      <material name="gray">
+        <color rgba="0.6 0.6 0.6 1"/>
+      </material>
+    </visual>
+    <visual name="arm-5">
+      <origin xyz="-0.1025 -0.1776 0" rpy="0 1.5708 -2.0944"/>
+      <geometry>
+        <cylinder radius="0.01" length="0.40998"/>
+      </geometry>
+      <material name="gray">
+        <color rgba="0.6 0.6 0.6 1"/>
+      </material>
+    </visual>
+    <visual name="arm-6">
+      <origin xyz="0.1025 -0.1776 0" rpy="0 1.5708 -1.0472"/>
+      <geometry>
+        <cylinder radius="0.01" length="0.40998"/>
+      </geometry>
+      <material name="gray">
+        <color rgba="0.6 0.6 0.6 1"/>
+      </material>
+    </visual>
+  </link>
+
+  <!-- joints -->
+  <joint name="base_rotor_1_joint" type="fixed">
+    <parent link="base"/>
+    <child link="rotor-1"/>
+    <origin xyz="0.38998 0 0" rpy="-0.349066 0 0"/>
+    <axis xyz="0 0 1"/>
+  </joint>
+  <joint name="base_rotor_2_joint" type="fixed">
+    <parent link="base"/>
+    <child link="rotor-2"/>
+    <origin xyz="0.195 0.3377 0" rpy="0.349066 0 1.0472"/>
+    <axis xyz="0 0 1"/>
+  </joint>
+  <joint name="base_rotor_3_joint" type="fixed">
+    <parent link="base"/>
+    <child link="rotor-3"/>
+    <origin xyz="-0.195 0.3377 0" rpy="-0.349066 0 2.0944"/>
+    <axis xyz="0 0 1"/>
+  </joint>
+  <joint name="base_rotor_4_joint" type="fixed">
+    <parent link="base"/>
+    <child link="rotor-4"/>
+    <origin xyz="-0.38998 0 0" rpy="-0.349066 0 0"/>
+    <axis xyz="0 0 1"/>
+  </joint>
+  <joint name="base_rotor_5_joint" type="fixed">
+    <parent link="base"/>
+    <child link="rotor-5"/>
+    <origin xyz="-0.195 -0.3377 0" rpy="0.349066 0 1.0472"/>
+    <axis xyz="0 0 1"/>
+  </joint>
+  <joint name="base_rotor_6_joint" type="fixed">
+    <parent link="base"/>
+    <child link="rotor-6"/>
+    <origin xyz="0.195 -0.3377 0" rpy="-0.349066 0 2.0944"/>
+    <axis xyz="0 0 1"/>
+  </joint>
+  <joint name="fixed" type="fixed">
+    <parent link="base"/>
+    <child link="arm_base"/>
+    <origin xyz="0 0 -0.025" rpy="3.1415 0 0"/>
+    <axis xyz="0 0 1"/>
+  </joint>
+  <joint name="joint1" type="revolute">
+    <parent link="arm_base"/>
+    <child link="link1"/>
+    <origin xyz="0.0 0.0 0.054" rpy="0.0 0.0 0.0"/>
+    <axis xyz="0 0 1"/>
+    <limit effort="50.0" lower="-100" upper="100" velocity="5.0"/>
+    <dynamics damping="5.3e-6" friction="0.2"/>
+  </joint>
+  <joint name="joint2" type="revolute">
+    <parent link="link1"/>
+    <child link="link2"/>
+    <origin xyz="0.0 0.0 0.167" rpy="1.5707 0.0 0.0"/>
+    <axis xyz="0 0 1"/>
+    <limit effort="50.0" lower="-6.283" upper="6.283" velocity="5.0"/>
+    <dynamics damping="4.2e-6" friction="0.11"/>
+  </joint>
+  <!--  Use only two first links 
+  <joint name="joint3" type="revolute">
+    <parent link="link2"/>
+    <child link="link3"/>
+    <origin xyz="0.3 0.0 0.0" rpy="0.0 1.5707 0.0"/>
+    <axis xyz="0 0 1"/>
+    <limit effort="50.0" lower="-100" upper="100" velocity="5.0"/>
+    <dynamics damping="8e-6" friction="0.15"/>
+  </joint>
+  
+  <joint name="joint4" type="revolute">
+    <parent link="link3"/>
+    <child link="link4"/>
+    <origin xyz="0.0 0.0 0.330" rpy="0.0 -1.5707 0.0"/>
+    <axis xyz="0 0 1"/>
+    <limit effort="50.0" lower="-100" upper="100" velocity="5.0"/>
+    <dynamics damping="4.2e-6" friction="0.11"/>
+  </joint>
+  -->
+  <joint name="fixed_markers" type="fixed">
+    <parent link="link2"/>
+    <child link="markers"/>
+    <origin xyz="0.32 0.0 0.0" rpy="0.0 0.0 0.0"/>
+  </joint>
+  
+
+  <!-- rotors -->
+  <link name="rotor-1">
+    <inertial>
+      <mass value="0.07"/>
+      <origin xyz="0 0 0.041" rpy="0 0 0"/>
+      <inertia ixx="4e-5" ixy="0" ixz="0" iyy="4e-5" iyz="0" izz="8e-5"/>
+    </inertial>
+    <collision name="collision">
+      <origin xyz="0 0 0.041" rpy="0 0 0"/>
+      <geometry>
+        <cylinder radius="0.127" length="0.002"/>
+      </geometry>
+    </collision>
+    <visual name="motor">
+      <origin xyz="0 0 0.015" rpy="0 0 0"/>
+      <geometry>
+        <cylinder radius="0.015" length="0.03"/>
+      </geometry>
+      <material name="gray2">
+        <color rgba="0.1 0.1 0.1 1"/>
+      </material>
+    </visual>
+    <visual name="axle">
+      <origin xyz="0 0 0.035" rpy="0 0 0"/>
+      <geometry>
+        <cylinder radius="0.002" length="0.01"/>
+      </geometry>
+      <material name="gray2">
+        <color rgba="0.1 0.1 0.1 1"/>
+      </material>
+    </visual>
+    <visual name="blade">
+      <origin xyz="0 0 0.041" rpy="0 0 0"/>
+      <geometry>
+        <box size="0.25 0.03 0.002"/>
+      </geometry>
+      <material name="gray2">
+        <color rgba="0.1 0.1 0.1 1"/>
+      </material>
+    </visual>
+  </link>
+  <link name="rotor-2">
+    <inertial>
+      <mass value="0.07"/>
+      <origin xyz="0 0 0.041" rpy="0 0 0"/>
+      <inertia ixx="4e-5" ixy="0" ixz="0" iyy="4e-5" iyz="0" izz="8e-5"/>
+    </inertial>
+    <collision name="collision">
+      <origin xyz="0 0 0.041" rpy="0 0 0"/>
+      <geometry>
+        <cylinder radius="0.127" length="0.002"/>
+      </geometry>
+    </collision>
+    <visual name="motor">
+      <origin xyz="0 0 0.015" rpy="0 0 0"/>
+      <geometry>
+        <cylinder radius="0.015" length="0.03"/>
+      </geometry>
+      <material name="gray2">
+        <color rgba="0.1 0.1 0.1 1"/>
+      </material>
+    </visual>
+    <visual name="axle">
+      <origin xyz="0 0 0.035" rpy="0 0 0"/>
+      <geometry>
+        <cylinder radius="0.002" length="0.01"/>
+      </geometry>
+      <material name="gray2">
+        <color rgba="0.1 0.1 0.1 1"/>
+      </material>
+    </visual>
+    <visual name="blade">
+      <origin xyz="0 0 0.041" rpy="0 0 0"/>
+      <geometry>
+        <box size="0.25 0.03 0.002"/>
+      </geometry>
+      <material name="gray2">
+        <color rgba="0.1 0.1 0.1 1"/>
+      </material>
+    </visual>
+  </link>
+  <link name="rotor-3">
+    <inertial>
+      <mass value="0.07"/>
+      <origin xyz="0 0 0.041" rpy="0 0 0"/>
+      <inertia ixx="4e-5" ixy="0" ixz="0" iyy="4e-5" iyz="0" izz="8e-5"/>
+    </inertial>
+    <collision name="collision">
+      <origin xyz="0 0 0.041" rpy="0 0 0"/>
+      <geometry>
+        <cylinder radius="0.127" length="0.002"/>
+      </geometry>
+    </collision>
+    <visual name="motor">
+      <origin xyz="0 0 0.015" rpy="0 0 0"/>
+      <geometry>
+        <cylinder radius="0.015" length="0.03"/>
+      </geometry>
+      <material name="gray2">
+        <color rgba="0.1 0.1 0.1 1"/>
+      </material>
+    </visual>
+    <visual name="axle">
+      <origin xyz="0 0 0.035" rpy="0 0 0"/>
+      <geometry>
+        <cylinder radius="0.002" length="0.01"/>
+      </geometry>
+      <material name="gray2">
+        <color rgba="0.1 0.1 0.1 1"/>
+      </material>
+    </visual>
+    <visual name="blade">
+      <origin xyz="0 0 0.041" rpy="0 0 0"/>
+      <geometry>
+        <box size="0.25 0.03 0.002"/>
+      </geometry>
+      <material name="gray2">
+        <color rgba="0.1 0.1 0.1 1"/>
+      </material>
+    </visual>
+  </link>
+  <link name="rotor-4">
+    <inertial>
+      <mass value="0.07"/>
+      <origin xyz="0 0 0.041" rpy="0 0 0"/>
+      <inertia ixx="4e-5" ixy="0" ixz="0" iyy="4e-5" iyz="0" izz="8e-5"/>
+    </inertial>
+    <collision name="collision">
+      <origin xyz="0 0 0.041" rpy="0 0 0"/>
+      <geometry>
+        <cylinder radius="0.127" length="0.002"/>
+      </geometry>
+    </collision>
+    <visual name="motor">
+      <origin xyz="0 0 0.015" rpy="0 0 0"/>
+      <geometry>
+        <cylinder radius="0.015" length="0.03"/>
+      </geometry>
+      <material name="gray2">
+        <color rgba="0.1 0.1 0.1 1"/>
+      </material>
+    </visual>
+    <visual name="axle">
+      <origin xyz="0 0 0.035" rpy="0 0 0"/>
+      <geometry>
+        <cylinder radius="0.002" length="0.01"/>
+      </geometry>
+      <material name="gray2">
+        <color rgba="0.1 0.1 0.1 1"/>
+      </material>
+    </visual>
+    <visual name="blade">
+      <origin xyz="0 0 0.041" rpy="0 0 0"/>
+      <geometry>
+        <box size="0.25 0.03 0.002"/>
+      </geometry>
+      <material name="gray2">
+        <color rgba="0.1 0.1 0.1 1"/>
+      </material>
+    </visual>
+  </link>
+  <link name="rotor-5">
+    <inertial>
+      <mass value="0.07"/>
+      <origin xyz="0 0 0.041" rpy="0 0 0"/>
+      <inertia ixx="4e-5" ixy="0" ixz="0" iyy="4e-5" iyz="0" izz="8e-5"/>
+    </inertial>
+    <collision name="collision">
+      <origin xyz="0 0 0.041" rpy="0 0 0"/>
+      <geometry>
+        <cylinder radius="0.127" length="0.002"/>
+      </geometry>
+    </collision>
+    <visual name="motor">
+      <origin xyz="0 0 0.015" rpy="0 0 0"/>
+      <geometry>
+        <cylinder radius="0.015" length="0.03"/>
+      </geometry>
+      <material name="gray2">
+        <color rgba="0.1 0.1 0.1 1"/>
+      </material>
+    </visual>
+    <visual name="axle">
+      <origin xyz="0 0 0.035" rpy="0 0 0"/>
+      <geometry>
+        <cylinder radius="0.002" length="0.01"/>
+      </geometry>
+      <material name="gray2">
+        <color rgba="0.1 0.1 0.1 1"/>
+      </material>
+    </visual>
+    <visual name="blade">
+      <origin xyz="0 0 0.041" rpy="0 0 0"/>
+      <geometry>
+        <box size="0.25 0.03 0.002"/>
+      </geometry>
+      <material name="gray2">
+        <color rgba="0.1 0.1 0.1 1"/>
+      </material>
+    </visual>
+  </link>
+  <link name="rotor-6">
+    <inertial>
+      <mass value="0.07"/>
+      <origin xyz="0 0 0.041" rpy="0 0 0"/>
+      <inertia ixx="4e-5" ixy="0" ixz="0" iyy="4e-5" iyz="0" izz="8e-5"/>
+    </inertial>
+    <collision name="collision">
+      <origin xyz="0 0 0.041" rpy="0 0 0"/>
+      <geometry>
+        <cylinder radius="0.127" length="0.002"/>
+      </geometry>
+    </collision>
+    <visual name="motor">
+      <origin xyz="0 0 0.015" rpy="0 0 0"/>
+      <geometry>
+        <cylinder radius="0.015" length="0.03"/>
+      </geometry>
+      <material name="gray2">
+        <color rgba="0.1 0.1 0.1 1"/>
+      </material>
+    </visual>
+    <visual name="axle">
+      <origin xyz="0 0 0.035" rpy="0 0 0"/>
+      <geometry>
+        <cylinder radius="0.002" length="0.01"/>
+      </geometry>
+      <material name="gray2">
+        <color rgba="0.1 0.1 0.1 1"/>
+      </material>
+    </visual>
+    <visual name="blade">
+      <origin xyz="0 0 0.041" rpy="0 0 0"/>
+      <geometry>
+        <box size="0.25 0.03 0.002"/>
+      </geometry>
+      <material name="gray2">
+        <color rgba="0.1 0.1 0.1 1"/>
+      </material>
+    </visual>
+  </link>
+
+  <!-- arm -->
+  <link name="arm_base">
+    <inertial>
+      <mass value="0.412"/>
+      <origin xyz="0.0 0.0 0.0641" rpy="0 0 0"/>
+      <inertia ixx="0.000788644" ixy="0.0" ixz="0.0" iyy="0.000788644" iyz="-0.000002208" izz="0.000511741"/>
+    </inertial>
+    <visual name="arm_base_visual">
+      <origin xyz="0 0 0.035" rpy="0 0 0"/>
+      <geometry>
+        <cylinder length="0.07" radius="0.043"/>
+      </geometry>
+      <material name="black">
+        <color rgba="0 0 0 1"/>
+      </material>
+    </visual>
+    <collision name="arm_base_geom">
+      <origin xyz="0 0 0.035" rpy="0 0 0"/>
+      <geometry>
+        <cylinder length="0.07" radius="0.043"/>
+      </geometry>
+    </collision>
+  </link>
+  <link name="link1">
+    <inertial>
+      <mass value="0.276"/>
+      <origin xyz="0.0 0.0 0.104" rpy="0 0 0"/>
+      <inertia ixx="0.001342508" ixy="0.0" ixz="0.0" iyy="0.001342508" iyz="0.0" izz="0.000152961"/>
+    </inertial>
+    <visual name="link1_visual">
+      <origin xyz="0 0 0.07" rpy="0 0 0"/>
+      <geometry>
+        <cylinder length="0.09" radius="0.04"/>
+      </geometry>
+      <material name="black">
+        <color rgba="0 0 0 1"/>
+      </material>
+    </visual>
+    <collision name="link1_geom">
+      <origin xyz="0 0 0.07" rpy="0 0 0"/>
+      <geometry>
+        <cylinder length="0.09" radius="0.04"/>
+      </geometry>
+    </collision>
+  </link>
+  <link name="link2">
+    <inertial>
+      <mass value="0.554"/>
+      <origin xyz="0.21 0 0.0036" rpy="0 0 0"/>
+      <inertia ixx="0.00030867" ixy="0.0" ixz="0.00006842" iyy="0.00629935" iyz="0.0" izz="0.006337563"/>
+    </inertial>
+    <visual name="link2_visual1">
+      <origin xyz="0.115 0 0.0" rpy="0 0 0"/>
+      <geometry>
+        <box size="0.310 0.08 0.04"/>
+      </geometry>
+      <material name="gazebo-green">
+        <color rgba="0 1 0 1"/>
+      </material>
+    </visual>
+    <visual name="link2_visual2">
+      <origin xyz="0.295 0 0" rpy="0 1.5707 0"/>
+      <geometry>
+        <cylinder length="0.0475" radius="0.04"/>
+      </geometry>
+      <material name="gazebo-green">
+        <color rgba="0 1 0 1"/>
+      </material>
+    </visual>
+    <collision name="link2_geom1">
+      <origin xyz="0.115 0 0.0" rpy="0 0 0"/>
+      <geometry>
+        <box size="0.310 0.08 0.04"/>
+      </geometry>
+    </collision>
+    <collision name="link2_geom2">
+      <origin xyz="0.295 0 0" rpy="0 1.5707 0"/>
+      <geometry>
+        <cylinder length="0.0475" radius="0.04"/>
+      </geometry>
+    </collision>
+  </link>
+  <!--  Use only two first links 
+  <link name="link3">
+    <inertial>
+      <mass value="0.528"/>
+      <origin xyz="0.0039 0.0 0.189" rpy="0 0 0"/>
+      <inertia ixx="0.006580241" ixy="0.0" ixz="0.000044894" iyy="0.006537977" iyz="0.0" izz="0.000317094"/>
+    </inertial>
+    <visual name="link3_visual1">
+      <origin xyz="0 0 0.05" rpy="0 0 0"/>
+      <geometry>
+        <cylinder length="0.05" radius="0.04"/>
+      </geometry>
+      <material name="black">
+        <color rgba="0 0 0 1"/>
+      </material>
+    </visual>
+    <visual name="link3_visual2">
+      <origin xyz="0.0 0 0.22" rpy="0 0 0"/>
+      <geometry>
+        <box size="0.04 0.08 0.310"/>
+      </geometry>
+      <material name="black">
+        <color rgba="0 0 0 1"/>
+      </material>
+    </visual>
+    <collision name="link3_geom1">
+      <origin xyz="0 0 0.05" rpy="0 0 0"/>
+      <geometry>
+        <cylinder length="0.05" radius="0.04"/>
+      </geometry>
+    </collision>
+    <collision name="link3_geom2">
+      <origin xyz="0.0 0 0.22" rpy="0 0 0"/>
+      <geometry>
+        <box size="0.04 0.08 0.310"/>
+      </geometry>
+    </collision>
+  </link>
+  
+  <link name="link4">
+    <inertial>
+      <mass value="0.059"/>
+      <origin xyz="0.015 0.0 0.0" rpy="0 0 0"/>
+      <inertia ixx="0.000024351" ixy="0.0" ixz="0.000044894" iyy="0.000060957" iyz="0.0" izz="0.000054188"/>
+    </inertial>
+    <visual name="link4_visual">
+      <origin xyz="0.04 0 0.0" rpy="0 0 0"/>
+      <geometry>
+        <box size="0.1 0.04 0.06"/>
+      </geometry>
+      <material name="gazebo-green">
+        <color rgba="0 1 0 1"/>
+      </material>
+    </visual>
+    <collision name="link4_geom">
+      <origin xyz="0.04 0 0.0" rpy="0 0 0"/>
+      <geometry>
+        <box size="0.1 0.04 0.06"/>
+      </geometry>
+    </collision>
+  </link>
+  -->
+  <link name="markers">
+    <inertial>
+      <mass value="0.07"/>
+      <origin xyz="0.0 0 0.0" rpy="0 0 0"/>
+      <inertia ixx="0.00000266" ixy="0.0" ixz="0.0" iyy="0.0000022" iyz="0.0" izz="0.0000022"/>
+    </inertial>
+    <!--
+    <visual name="markers_visual">
+      <origin xyz="0.025 0 0.0" rpy="0 1.5707 0"/>
+      <geometry>
+        <box size="0.05 0.05 0.03"/>
+      </geometry>
+      <material name="black">
+        <color rgba="0 0 0 1"/>
+      </material>
+    </visual>
+    
+    <collision name="markers_geom">
+      <origin xyz="0.025 0 0.0" rpy="0 1.5707 0"/>
+      <geometry>
+        <box size="0.05 0.05 0.03"/>
+      </geometry>
+    </collision>
+    -->
+  </link>
+  
+  
+  <!-- Plugins -->
+  <plugin name="mrsim" filename="mrsim-gazebo.so">
+    <link>base</link>
+    <rotors>
+      <noise>0.01</noise>
+      <cf>13.0e-4</cf>
+      <ct>1.996e-5</ct>
+      <vfxy>0.5</vfxy>
+      <vfz>0.4</vfz>
+      <vtxy>0.2</vtxy>
+      <vtz>0.2</vtz>
+      <rotor>
+        <joint spin="cw">motor-1</joint>
+      </rotor>
+      <rotor>
+        <joint spin="ccw">motor-2</joint>
+      </rotor>
+      <rotor>
+        <joint spin="cw">motor-3</joint>
+      </rotor>
+      <rotor>
+        <joint spin="ccw">motor-4</joint>
+      </rotor>
+      <rotor>
+        <joint spin="cw">motor-5</joint>
+      </rotor>
+      <rotor>
+        <joint spin="ccw">motor-6</joint>
+      </rotor>
+    </rotors>
+  </plugin>
+
+  <!-- Gazebo -->
+  <gazebo reference="arm_base">
+    <material>Gazebo/Black</material>
+    <selfCollide>true</selfCollide>
+  </gazebo>
+  <gazebo reference="link1">
+    <material>Gazebo/Black</material>
+    <selfCollide>true</selfCollide>
+  </gazebo>
+  <gazebo reference="link2">
+    <material>Gazebo/Green</material>
+    <selfCollide>true</selfCollide>
+  </gazebo>
+  <gazebo reference="link3">
+    <material>Gazebo/Black</material>
+    <selfCollide>true</selfCollide>
+  </gazebo>
+  <gazebo reference="link4">
+    <material>Gazebo/Green</material>
+    <selfCollide>true</selfCollide>
+  </gazebo>
+  <gazebo reference="markers">
+    <material>Gazebo/Black</material>
+    <selfCollide>true</selfCollide>
+  </gazebo>
+  <gazebo>
+    <plugin name="arm_plugin" filename="dxsim-gazebo.so">
+      <pty>/tmp/pty-boomslang</pty>
+      <motors>
+        <motor>
+          <joint spin="ccw">joint1</joint>
+          <p0>0.0</p0>
+          <id>1</id>
+          <noise>0.001</noise>
+          <debug>0</debug>
+        </motor>
+        <motor>
+          <joint spin="ccw">joint2</joint>
+          <p0>0.0</p0>
+          <id>2</id>
+          <noise>0.001</noise>
+          <debug>0</debug>
+        </motor>
+        <motor>
+          <joint spin="ccw">joint3</joint>
+          <p0>0.0</p0>
+          <id>3</id>
+          <noise>0.001</noise>
+          <debug>0</debug>
+        </motor>
+        <motor>
+          <joint spin="ccw">joint4</joint>
+          <p0>0.0</p0>
+          <id>4</id>
+          <noise>0.001</noise>
+          <debug>0</debug>
+        </motor>
+      </motors>
+    </plugin>
+  </gazebo>
+</robot>
