@@ -24,9 +24,10 @@ libwamctrl_codels_la_SOURCES +=	wamctrl_codels.c
 libwamctrl_codels_la_SOURCES +=	wamctrl_main_codels.c
 
 libwamctrl_codels_la_CPPFLAGS =	$(requires_CFLAGS)
-libwamctrl_codels_la_LIBADD   =	$(requires_LIBS)
-libwamctrl_codels_la_CPPFLAGS+=	$(codels_requires_CFLAGS)
-libwamctrl_codels_la_LIBADD  +=	$(codels_requires_LIBS)
+libwamctrl_codels_la_LIBADD   = $(requires_LIBS)
+libwamctrl_codels_la_CPPFLAGS+= $(codels_requires_CFLAGS)
+libwamctrl_codels_la_LIBADD  += $(codels_requires_LIBS)
+libwamctrl_codels_la_LIBADD  += -lwamctrl
 libwamctrl_codels_la_LDFLAGS  =	-release $(PACKAGE_VERSION)
 
 
